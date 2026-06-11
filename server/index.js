@@ -1,10 +1,13 @@
+// IMPORTING
 import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import connectDB from './configs/db.js'
-import authRoutes from './routes/auth.js'
 
+
+
+//CONFIGS AND MIDDLEWARE
 dotenv.config()
 connectDB()
 
@@ -23,4 +26,14 @@ app.use((err, req, res, next) => {
 })
 
 const PORT = process.env.PORT || 5000
+
+// ROUTE MOUNTING
+
+
+
+
+
+
+
+// SERVER LISTENING
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
