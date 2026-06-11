@@ -1,4 +1,4 @@
-import './styles/auth.css'
+import '../styles/auth.css'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
