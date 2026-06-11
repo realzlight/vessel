@@ -21,7 +21,7 @@ export default function Login() {
         </div>
 
         <div className="auth-header">
-          <h1 className="auth-title">Welcome back</h1>
+          <h1 className="auth-title">Prestigious Returns!</h1>
           <p className="auth-sub">Sign in to continue</p>
         </div>
 
