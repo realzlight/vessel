@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Changa+One:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Space+Grotesk:wght@300..700&display=swap');
+
 :root {
   --bg:      #000000;
   --surface: #0a0a0a;
@@ -12,6 +14,7 @@
   --radius:  6px;
   --mono:    'Geist Mono', ui-monospace, monospace;
   --sans:    'Geist', -apple-system, sans-serif;
+  --space: 'Space Grostek', sans-serif;
 }
 
 .auth-page {
@@ -51,9 +54,9 @@
 }
 
 .auth-logo {
-  font-family: var(--mono);
+  font-family: var(--space);
   font-size: 16px;
-  font-weight: 500;
+  font-weight:600;
   letter-spacing: 0.4px;
   text-transform: uppercase;
   color: var(--white);
@@ -105,7 +108,7 @@
   letter-spacing: 0.2px;
   
   line-height: 1.2;
-    background: linear-gradient(90deg, hsla(0, 0%, 70%, 1), #fff, hsla(0, 0%, 80%, 1));
+    background: linear-gradient(90deg, hsla(0, 0%, 40%, 1), #fff, hsla(0, 30%, 80%, 1));
   background-size:200% auto;
 
   -webkit-background-clip:text;
