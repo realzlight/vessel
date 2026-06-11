@@ -64,15 +64,14 @@
   align-items: center;
   gap: 8px;
   
-  background: linear-gradient(90deg, hsla(0, 0%, 70%, 1), #fff, hsla(0, 0%, 80%, 1));
+  background: linear-gradient(90deg, hsla(0, 0%, 40%, 1), #fff, hsla(0, 0%, 30%, 1));
   background-size:200% auto;
 
   -webkit-background-clip:text;
   background-clip:text;
   -webkit-text-fill-color:transparent;
 
-  animation:text-gradient 3
-  15s linear infinite;
+  animation:text-gradient 3s linear infinite;
 }
 
 @keyframes text-gradient{
@@ -108,15 +107,14 @@
   letter-spacing: 0.2px;
   
   line-height: 1.2;
-    background: linear-gradient(90deg, hsla(0, 0%, 40%, 1), #fff, hsla(0, 30%, 80%, 1));
+    background: linear-gradient(90deg, hsla(0, 0%, 40%, 1), #fff, hsla(0, 0%, 50%, 1));
   background-size:200% auto;
 
   -webkit-background-clip:text;
   background-clip:text;
   -webkit-text-fill-color:transparent;
 
-  animation:text-gradient 3
-  15s linear infinite;
+  animation:text-gradient 5s linear infinite;
 }
 
 @keyframes text-gradient{
