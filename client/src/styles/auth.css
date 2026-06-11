@@ -86,9 +86,24 @@
   font-size: 22px;
   font-weight: 600;
   color: var(--white);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.2px;
+  
   line-height: 1.2;
+    background: linear-gradient(90deg, hsla(0, 0%, 30%, 1), #fff, hsla(0, 0%, 30%, 1));
+  background-size:200% auto;
+
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+
+  animation:text-gradient 3s linear infinite;
 }
+
+@keyframes text-gradient{
+  0%{ background-position:0% center; }
+  100%{ background-position:200% center; }
+}
+
 
 .auth-sub {
   font-size: 13px;
