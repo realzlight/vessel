@@ -6,6 +6,14 @@ export default function Signup() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showName, setShowName] = useState(false)
+
+  const handleEmailPassword = (e) => {
+    e.preventDefault()
+    if (email && password.length >= 6) {
+      setShowName(true)
+    }
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -22,8 +30,8 @@ export default function Signup() {
         </div>
 
         <div className="auth-header">
-          <h1 className="auth-title">Create account</h1>
-          <p className="auth-sub">Get started for free</p>
+          <h1 className="auth-title>The Awakening.</h1>
+          <p className="auth-sub">Create your vessel</p>
         </div>
 
         <div className="social-group">
@@ -34,7 +42,7 @@ export default function Signup() {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
-            Continue with Google
+       8     Continue with Google
           </button>
           <button className="social-btn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -56,16 +64,7 @@ export default function Signup() {
           <span />
         </div>
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="field">
-            <label>Name</label>
-            <input
-              type="text"
-              placeholder="John Doe"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
+        <form className="auth-form" onSubmit={showName ? handleSubmit : handleEmailPassword}>
           <div className="field">
             <label>Email</label>
             <input
@@ -73,6 +72,7 @@ export default function Signup() {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={showName}
             />
           </div>
           <div className="field">
@@ -82,16 +82,34 @@ export default function Signup() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={showName}
             />
           </div>
-          <button type="submit" className="auth-submit">Create account</button>
+
+          {showName && (
+            <div className="field field-reveal">
+              <label>What do we call you?</label>
+              <input
+                type="text"
+                placeholder="your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoFocus
+              />
+            </div>
+          )}
+
+          <button type="submit" className="auth-submit">
+            {showName ? 'Create account' : 'Continue'}
+          </button>
         </form>
 
         <p className="auth-switch">
-          Already have an account? <Link to="/login">Sign in</Link>
+          Already in? <Link to="/login">Sign in</Link>
         </p>
 
       </div>
     </div>
   )
-}
+}	
+
