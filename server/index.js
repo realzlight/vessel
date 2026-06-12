@@ -4,7 +4,7 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import connectDB from './configs/db.js'
-
+import authRoutes from './routes/auth.js'
 
 
 //CONFIGS AND MIDDLEWARE
@@ -30,6 +30,8 @@ const PORT = process.env.PORT || 5000
 // ROUTE MOUNTING
 
 
+
+app.use('/api/auth', authRoutes)
 
 
 

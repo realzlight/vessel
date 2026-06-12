@@ -1,12 +1,14 @@
 import '../styles/auth.css'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export default function Signup() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showName, setShowName] = useState(false)
+  const navigate = useNavigate()
 
   const handleEmailPassword = (e) => {
     e.preventDefault()
@@ -17,7 +19,10 @@ export default function Signup() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log({ name, email, password })
+    
+    axios.post('http://localhost:5000/api/auth/Signup')
+    
+    
   }
 
   return (
