@@ -20,7 +20,18 @@ export default function Signup() {
   const handleSubmit = (e) => {
     e.preventDefault()
     
-    axios.post('http://localhost:5000/api/auth/Signup')
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e) => {
+  e.preventDefault()
+  try {
+    const res = await axios.post('/api/auth/signup', { name, email, password })
+    console.log(res.data)
+    navigate(`/${name}`)
+  } catch (error) {
+    console.log(error)
+  }
+}
     
     
   }
