@@ -1,14 +1,19 @@
 import '../styles/auth.css'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-
+import axios from 'axios'
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log({ email, password })
+    
+    axios.post('http://localhost:5000/auth/api/login',{
+      email , password}, {WithCredentials:true})
+    
+  
+  
   }
 
   return (
