@@ -29,9 +29,9 @@ body {
 
 .land {
   min-height: 100dvh;
-  background: var(--bg);
+  background: transparent; /* Changed from var(--bg) */
   position: relative;
-  z-index:1;
+  z-index: 1; /* Make sure it's above the canvas */
 }
 
 /* noise */
