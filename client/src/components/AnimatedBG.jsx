@@ -5,157 +5,184 @@ export default function AnimatedBG() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) {
-      console.error('Canvas not found');
-      return;
-    }
+    if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      console.error('Canvas context failed');
-      return;
-    }
+    if (!ctx) return;
 
-    // Set initial size
     const setSize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     setSize();
 
-    // Particles
-    const particles = [];
-    const particleCount = 50;
+    let globalTime = 0;
 
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.radius = Math.random() * 1.5 + 0.5;
-        this.vx = (Math.random() - 0.5) * 0.3;
-        this.vy = (Math.random() - 0.5) * 0.3;
+    // ========== GRID ==========
+    class GridAnimation {
+      constructor(width, height) {
+        this.width = width;
+        this.height = height;
+        this.margin = 100;
+        this.spacing = 90;
+      }
+
+      isActive(globalTime) {
+        return globalTime < 4000;
+      }
+
+      getOpacity(globalTime) {
+        if (globalTime < 500) return globalTime / 500;
+        if (globalTime > 3500) return (4000 - globalTime) / 500;
+        return 1;
+      }
+
+      draw(ctx, globalTime) {
+        const opacity = this.getOpacity(globalTime);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.25})`;
+        ctx.lineWidth = 1;
+
+        for (let x = this.margin; x < this.width - this.margin; x += this.spacing) {
+          ctx.beginPath();
+          ctx.moveTo(x, this.margin);
+          ctx.lineTo(x, this.height - this.margin);
+          ctx.stroke();
+        }
+
+        for (let y = this.margin; y < this.height - this.margin; y += this.spacing) {
+          ctx.beginPath();
+          ctx.moveTo(this.margin, y);
+          ctx.lineTo(this.width - this.margin, y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // ========== WAVE ==========
+    class WaveAnimation {
+      constructor(width, height) {
+        this.width = width;
+        this.height = height;
+      }
+
+      isActive(globalTime) {
+        return globalTime >= 3500 && globalTime < 7500;
+      }
+
+      getOpacity(globalTime) {
+        const start = 3500;
+        const end = 7500;
+        if (globalTime < start + 500) return (globalTime - start) / 500;
+        if (globalTime > end - 500) return (end - globalTime) / 500;
+        return 1;
+      }
+
+      draw(ctx, globalTime) {
+        const opacity = this.getOpacity(globalTime);
+        const timeOffset = (globalTime - 3500) * 0.0008;
+        const centerY = this.height / 2;
+        const amplitude = 40;
+        const frequency = 0.015;
+
+        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.35})`;
+        ctx.lineWidth = 2;
+
+        for (let waveIndex = 0; waveIndex < 3; waveIndex++) {
+          const yOffset = centerY - 80 + waveIndex * 80;
+          ctx.beginPath();
+
+          for (let x = 0; x < this.width; x += 3) {
+            const wave = Math.sin(x * frequency + timeOffset) * amplitude;
+            const y = yOffset + wave;
+            if (x === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          }
+          ctx.stroke();
+        }
+      }
+    }
+
+    // ========== CIRCLES (Particles) ==========
+    class CircleParticles {
+      constructor(width, height) {
+        this.width = width;
+        this.height = height;
+        this.particles = [];
+
+        for (let i = 0; i < 50; i++) {
+          this.particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.6,
+            vy: (Math.random() - 0.5) * 0.6,
+            radius: Math.random() * 2 + 1,
+            life: Math.random() * 0.7 + 0.4,
+          });
+        }
       }
 
       update() {
-        this.x += this.vx;
-        this.y += this.vy;
+        this.particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
 
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+          if (p.x < 0 || p.x > this.width) p.vx *= -1;
+          if (p.y < 0 || p.y > this.height) p.vy *= -1;
 
-        this.x = Math.max(0, Math.min(canvas.width, this.x));
-        this.y = Math.max(0, Math.min(canvas.height, this.y));
+          p.x = Math.max(0, Math.min(this.width, p.x));
+          p.y = Math.max(0, Math.min(this.height, p.y));
+
+          p.life += (Math.random() - 0.5) * 0.03;
+          p.life = Math.max(0.3, Math.min(1, p.life));
+        });
       }
 
       draw(ctx) {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
+        this.particles.forEach((p) => {
+          ctx.fillStyle = `rgba(255, 255, 255, ${p.life * 0.5})`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+        });
       }
     }
 
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle());
-    }
+    const grid = new GridAnimation(canvas.width, canvas.height);
+    const wave = new WaveAnimation(canvas.width, canvas.height);
+    const circles = new CircleParticles(canvas.width, canvas.height);
 
-    let gridOffset = 0;
+    let lastTime = Date.now();
     let animationId = null;
 
     const animate = () => {
-      // Clear and fill background
+      const currentTime = Date.now();
+      globalTime = currentTime - lastTime;
+
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      const margin = 100;
-      const gridSpacing = 80;
-
-      // Draw grid lines
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
-      ctx.lineWidth = 0.8;
-
-      // Horizontal lines
-      for (let y = margin; y < canvas.height - margin; y += gridSpacing) {
-        ctx.beginPath();
-        for (let x = margin; x < canvas.width - margin; x += 5) {
-          const wave = Math.sin((x + gridOffset) * 0.008) * 6;
-          if (x === margin) {
-            ctx.moveTo(x, y + wave);
-          } else {
-            ctx.lineTo(x, y + wave);
-          }
-        }
-        ctx.stroke();
+      if (grid.isActive(globalTime)) {
+        grid.draw(ctx, globalTime);
       }
 
-      // Vertical lines
-      for (let x = margin; x < canvas.width - margin; x += gridSpacing) {
-        ctx.beginPath();
-        for (let y = margin; y < canvas.height - margin; y += 5) {
-          const wave = Math.sin((y + gridOffset) * 0.008) * 6;
-          if (y === margin) {
-            ctx.moveTo(x + wave, y);
-          } else {
-            ctx.lineTo(x + wave, y);
-          }
-        }
-        ctx.stroke();
+      if (wave.isActive(globalTime)) {
+        wave.draw(ctx, globalTime);
       }
 
-      // Draw triangles/diamonds
-      const positions = [
-        { x: canvas.width * 0.15, y: canvas.height * 0.25 },
-        { x: canvas.width * 0.85, y: canvas.height * 0.35 },
-        { x: canvas.width * 0.2, y: canvas.height * 0.8 },
-        { x: canvas.width * 0.8, y: canvas.height * 0.75 },
-      ];
+      circles.update();
+      circles.draw(ctx);
 
-      positions.forEach((pos, i) => {
-        const time = gridOffset * 0.03 + i * 10;
-        const scale = Math.sin(time * 0.01) * 0.4 + 0.8;
-        const rotation = time * 0.3;
-        const opacity = Math.sin(time * 0.015) * 0.25 + 0.2;
+      if (globalTime > 12000) {
+        lastTime = Date.now();
+      }
 
-        ctx.save();
-        ctx.translate(pos.x, pos.y);
-        ctx.rotate((rotation * Math.PI) / 180);
-        ctx.scale(scale, scale);
-
-        // Diamond outline
-        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.moveTo(0, -25);
-        ctx.lineTo(25, 0);
-        ctx.lineTo(0, 25);
-        ctx.lineTo(-25, 0);
-        ctx.closePath();
-        ctx.stroke();
-
-        // Inner diamond
-        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.4})`;
-        ctx.lineWidth = 0.8;
-        ctx.beginPath();
-        ctx.moveTo(0, -12);
-        ctx.lineTo(12, 0);
-        ctx.lineTo(0, 12);
-        ctx.lineTo(-12, 0);
-        ctx.closePath();
-        ctx.stroke();
-
-        ctx.restore();
-      });
-
-      // Draw particles
-      particles.forEach((p) => {
-        p.update();
-        p.draw(ctx);
-      });
-
-      gridOffset += 0.4;
       animationId = requestAnimationFrame(animate);
     };
 
+    lastTime = Date.now();
     animate();
 
     const handleResize = () => {
