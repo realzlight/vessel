@@ -22,7 +22,7 @@ export default function Landing() {
           <h1 className="land-title">VESSEL</h1>
           <p className="land-sub">
             Your product ships fast. Your users deserve to know what changed.<br />
-            Vessel turns your commits into <strong>clean, readable changelogs</strong> — without you writing a single word.
+            Vessel turns your commits into <strong class="land-sub-h">clean, readable changelogs</strong>  without you writing a single word.
           </p>
           <div className="land-actions">
             <Link to="/signup" className="land-btn-primary">
