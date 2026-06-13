@@ -3,6 +3,11 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
+                                                                                                  export default function Signup() import '../styles/auth.css'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+
 export default function Signup() {
   const [name, setName] = useState('')
   const [username, setUsername] = useState('')
