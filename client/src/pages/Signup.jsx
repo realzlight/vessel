@@ -1,15 +1,15 @@
 import '../styles/auth.css'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 export default function Signup() {
   const [name, setName] = useState('')
+  const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showName, setShowName] = useState(false)
-  const [errors, setErrors] = useState({}) // ← error state
+  const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
@@ -48,11 +48,16 @@ export default function Signup() {
       return
     }
 
+    if (!username.trim()) {
+      setErrors({ username: 'pick a username fam' })
+      setLoading(false)
+      return
+    }
+
     try {
-      const res = await axios.post('/api/auth/signup', { name, email, password })
-      navigate(`/${res.data.user.name}`)
+      const res = await axios.post('/api/auth/signup', { name, username, email, password })
+      navigate(`/${res.data.username}`)
     } catch (error) {
-      // Backend sends {field, message}
       if (error.response?.data?.field) {
         setErrors({ [error.response.data.field]: error.response.data.message })
       } else {
@@ -63,7 +68,7 @@ export default function Signup() {
   }
 
   const clearError = (field) => {
-    if (errors[field]) setErrors({...errors, [field]: '' })
+    if (errors[field]) setErrors({ ...errors, [field]: '' })
   }
 
   return (
@@ -92,7 +97,7 @@ export default function Signup() {
           <span />
         </div>
 
-        <form className="auth-form" onSubmit={showName? handleSubmit : handleEmailPassword}>
+        <form className="auth-form" onSubmit={showName ? handleSubmit : handleEmailPassword}>
           <div className="field">
             <label>Email</label>
             <input
@@ -101,7 +106,7 @@ export default function Signup() {
               value={email}
               onChange={(e) => { setEmail(e.target.value); clearError('email') }}
               disabled={showName}
-              className={errors.email? 'input-error' : ''}
+              className={errors.email ? 'input-error' : ''}
             />
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
@@ -114,30 +119,44 @@ export default function Signup() {
               value={password}
               onChange={(e) => { setPassword(e.target.value); clearError('password') }}
               disabled={showName}
-              className={errors.password? 'input-error' : ''}
+              className={errors.password ? 'input-error' : ''}
             />
             {errors.password && <span className="error-text">{errors.password}</span>}
           </div>
 
           {showName && (
-            <div className="field field-reveal">
-              <label>What do we call you?</label>
-              <input
-                type="text"
-                placeholder="your name"
-                value={name}
-                onChange={(e) => { setName(e.target.value); clearError('name') }}
-                autoFocus
-                className={errors.name? 'input-error' : ''}
-              />
-              {errors.name && <span className="error-text">{errors.name}</span>}
-            </div>
+            <>
+              <div className="field field-reveal">
+                <label>What do we call you?</label>
+                <input
+                  type="text"
+                  placeholder="your name"
+                  value={name}
+                  onChange={(e) => { setName(e.target.value); clearError('name') }}
+                  autoFocus
+                  className={errors.name ? 'input-error' : ''}
+                />
+                {errors.name && <span className="error-text">{errors.name}</span>}
+              </div>
+
+              <div className="field field-reveal">
+                <label>Username</label>
+                <input
+                  type="text"
+                  placeholder="@yourhandle"
+                  value={username}
+                  onChange={(e) => { setUsername(e.target.value.toLowerCase()); clearError('username') }}
+                  className={errors.username ? 'input-error' : ''}
+                />
+                {errors.username && <span className="error-text">{errors.username}</span>}
+              </div>
+            </>
           )}
 
           {errors.general && <span className="error-text center">{errors.general}</span>}
 
           <button type="submit" disabled={loading} className="auth-submit">
-            {loading? 'creating...' : showName? 'Create account' : 'Continue'}
+            {loading ? 'creating...' : showName ? 'Create account' : 'Continue'}
           </button>
         </form>
 

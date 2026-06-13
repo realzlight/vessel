@@ -5,9 +5,9 @@ import User from '../models/user.js'
 
 export const signup = async (req, res) => {
   try {
-    const { email, password, name } = req.body
+    const { email, password, name, username} = req.body
 
-    if (!email ||!password ||!name) {
+    if (!email ||!password ||!name ||!username) {
       return res.status(400).json({ message: 'All fields required' })
     }
 
@@ -15,7 +15,7 @@ export const signup = async (req, res) => {
     const existingUser = await User.findOne({
       $or: [
         { email: email.toLowerCase().trim() },
-        { name: name.trim() }
+        { username: name.trim() }
       ]
     })
 
@@ -31,7 +31,8 @@ export const signup = async (req, res) => {
     const newUser = await User.create({
       email: email.toLowerCase().trim(),
       password: hashedPassword,
-      name: name.trim()
+      name: name.trim(),
+      username: username.trim().toLowerCase()
     })
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' })
