@@ -10,7 +10,7 @@
   border: 1px solid var(--border2);
   border-radius: 100px;
   padding: 6px 14px;
-  margin: -1px auto 24px;  /* Changed from 44px to 24px (reduced by 20px) */
+  margin: -1px auto 44px;  /* Changed from 44px to 24px (reduced by 20px) */
   cursor: default;
   transition: border-color 0.15s, color 0.15s;
   animation: fadeUp 0.5s 0.05s ease-out both;
