@@ -56,7 +56,7 @@ export default function Login() {
         </div>
 
         <div className="auth-header">
-          <h1 className="auth-title">Back in the void.</h1>
+          <h1 className="auth-title">Prestigious Returns!</h1>
           <p className="auth-sub">we missed you, kind of.</p>
         </div>
 
