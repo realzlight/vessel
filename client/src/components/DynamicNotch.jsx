@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import './DynamicNotch.css'
+import '../components/DynamicNotch.css'
 
 const messages = [
   "Building Nightflare...",
