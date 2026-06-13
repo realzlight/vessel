@@ -10,7 +10,7 @@
   border: 1px solid var(--border2);
   border-radius: 100px;
   padding: 6px 14px;
-  margin: -1px auto 44px;  /* Changed from 44px to 24px (reduced by 20px) */
+  margin: -1px auto 44px;
   cursor: default;
   transition: border-color 0.15s, color 0.15s;
   animation: fadeUp 0.5s 0.05s ease-out both;
@@ -35,38 +35,38 @@
   min-height: 16px;
 }
 
-/* Apple Music Style Animation */
+/* Apple Music Style - Bottom to Top */
 .notch-text.show {
-  animation: musicBlurIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: lyricsSlideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .notch-text.hide {
-  animation: musicBlurOut 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: lyricsSlideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-@keyframes musicBlurIn {
+@keyframes lyricsSlideUp {
   from {
     opacity: 0;
-    filter: blur(12px);
-    transform: scale(1.8);
+    filter: blur(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
     filter: blur(0px);
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
-@keyframes musicBlurOut {
+@keyframes lyricsSlideDown {
   from {
     opacity: 1;
     filter: blur(0px);
-    transform: scale(1);
+    transform: translateY(0);
   }
   to {
     opacity: 0;
-    filter: blur(12px);
-    transform: scale(0.8);
+    filter: blur(10px);
+    transform: translateY(-12px);
   }
 }
 

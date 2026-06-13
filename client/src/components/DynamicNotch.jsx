@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import '../styles/DynamicNotch.css'
 
 const messages = [
   "changelog that actually updates itself",
   "less stress, more shipping",
-  "Visible User Changelogs!",
+  "User Visibility Is Maintained!",
   "built for devs who ship fast",
   "no more dead changelogs",
   "just connect your repo & go",
@@ -17,6 +17,7 @@ const messages = [
 export default function DynamicNotch() {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
+  const textRef = useRef(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,14 +26,14 @@ export default function DynamicNotch() {
       setTimeout(() => {
         setIndex((prev) => (prev + 1) % messages.length);
         setVisible(true);
-      }, 600); // Matches the 0.6s animation duration
-    }, 4200); // 3000ms display + 600ms animation + 600ms buffer
+      }, 600);
+    }, 4200);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="land-notch">
+    <div className="land-notch" ref={textRef}>
       <span className={`notch-text ${visible ? "show" : "hide"}`}>
         {messages[index]}
       </span>
