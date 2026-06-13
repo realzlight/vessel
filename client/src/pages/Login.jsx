@@ -50,8 +50,8 @@ export default function Login() {
     <div className="auth-page">
       <div className="auth-card">
 
-        <div className="auth-logo">
-          <span className="auth-logo-dot" />
+        <div className="auth-logo" onClick={() => navigate('/')}>
+         
           vessel
         </div>
 

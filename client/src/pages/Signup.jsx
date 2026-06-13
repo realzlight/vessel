@@ -77,7 +77,7 @@ export default function Signup() {
     <div className="auth-page">
       <div className="auth-card">
 
-        <div className="auth-logo">
+        <div className="auth-logo" onClick={() => navigate('/')}>
           <span className="auth-logo-dot" />
           vessel
         </div>
