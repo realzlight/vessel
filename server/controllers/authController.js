@@ -13,11 +13,11 @@ export const signup = async (req, res) => {
 
     // Check if email or name already exists
     const existingUser = await User.findOne({
-      $or: [
-        { email: email.toLowerCase().trim() },
-        { username: name.trim() }
-      ]
-    })
+  $or: [
+    { email: email.toLowerCase().trim() },
+    { username: username.trim() } // ← was name.trim()
+  ]
+})
 
     if (existingUser) {
       if (existingUser.email === email.toLowerCase().trim()) {
@@ -44,7 +44,7 @@ export const signup = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000
     })
 
-    res.status(201).json({ message: 'User created', user: { id: newUser._id, name: newUser.name } })
+    res.status(201).json({ message: 'User created', username: newUser.username })
 
   } catch (error) {
     console.log(error)
