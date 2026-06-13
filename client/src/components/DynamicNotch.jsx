@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import '../styles/DynamicNotch.css'
 
 const messages = [
-  "Building Nightflare...",
-  "Deploying Update",
-  "Learning New Skills",
-  "Creating Experiences",
-  "Welcome To My Portfolio",
-  "Open For Collaboration",
+  "Yoo! Ship Fast!",
+  "Vessel V1 BETA",
+  "Deploys Instantly To Your App",
+  "Auto Template AI with Pro",
+  "UI/UX PRO TEMPLATES",
+  "Give Us Star on GitHub!",
 ];
 
 export default function DynamicNotch() {
