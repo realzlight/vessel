@@ -13,7 +13,7 @@ export default function Landing() {
               <path d="M2 17l10 5 10-5"/>
               <path d="M2 12l10 5 10-5"/>
             </svg>
-            VESSEL
+            vessel
           </div>
           <Link to="/signup" className="land-nav-cta">Get started</Link>
         </nav>

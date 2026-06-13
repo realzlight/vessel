@@ -147,9 +147,8 @@ body {
   font-family: var(--mono);
   letter-spacing: 0.2px;
   color: var(--text);
-  display: flex;
-  align-items: center;
   gap: 8px;
+
   
   background: linear-gradient(90deg, hsla(0, 0%, 40%, 1), #fff, hsla(0, 0%, 30%, 1));
   background-size:200% auto;
