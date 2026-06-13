@@ -19,6 +19,14 @@ export default function Landing() {
         </nav>
 
         <section className="land-hero">
+          <div className="land-notch">
+  <span>Stars on GitHub<a className="github-button" href="https://github.com/realzlight/vessel" data-icon="octicon-star" data-show-count="true" aria-label="Star realzlight/vessel on GitHub"> Star</a>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script></span>
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M5 12h14M12 5l7 7-7 7"/>
+  </svg>
+</div>
           <h1 className="land-title">VESSEL</h1>
           <p className="land-sub">
             Your code got changed. Your users will know the changes instantly.<br />

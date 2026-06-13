@@ -205,7 +205,27 @@ body {
   border-color: var(--muted);
 }
 
+.land-notch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--subtle);
+  border: 1px solid var(--border2);
+  border-radius: 100px;
+  padding: 6px 14px;
+  margin-bottom: 28px;
+  cursor: default;
+  transition: border-color 0.15s, color 0.15s;
+  animation: fadeUp 0.5s 0.05s ease-out both;
+}
 
+.land-notch:hover {
+  border-color: var(--muted);
+  color: var(--text);
+}
 /* ── Divider Label ── */
 .land-section-label {
   font-family: var(--mono);
