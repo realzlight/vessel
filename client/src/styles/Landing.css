@@ -57,7 +57,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 0;
+  padding: 10px 0;
   border-bottom: 1px solid var(--border);
   animation: fadeUp 0.4s ease-out both;
 }
