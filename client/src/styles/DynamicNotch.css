@@ -1,39 +1,31 @@
 .land-notch {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 220px;
-  height: 42px;
-
-  border: 1px solid var(--border2);
-  border-radius: 999px;
-
-  padding: 0 18px;
-
-  color: var(--subtle);
+  gap: 8px;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.08em;
-
-  backdrop-filter: blur(12px);
-  background: rgba(255,255,255,0.03);
-
-  overflow: hidden;
-  position: relative;
-
-  animation: fadeUp 0.5s ease-out both;
-  transition: all .3s ease;
+  color: var(--subtle);
+  border: 1px solid var(--border2);
+  border-radius: 100px;
+  padding: 6px 14px;
+  margin-bottom: 30px;
+  cursor: default;
+  transition: border-color 0.15s, color 0.15s;
+  animation: fadeUp 0.5s 0.05s ease-out both;
 }
 
 .land-notch:hover {
   border-color: var(--muted);
   color: var(--text);
-  transform: translateY(-2px);
 }
-
 .notch-text {
   white-space: nowrap;
   transition: all .3s ease;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text);
 }
 
 .show {

@@ -14,7 +14,7 @@ export default function Landing() {
               <path d="M2 17l10 5 10-5"/>
               <path d="M2 12l10 5 10-5"/>
             </svg>
-            VESSEL
+            vessel
           </div>
           <Link to="/signup" className="land-nav-cta">Get started</Link>
         </nav>
@@ -23,8 +23,8 @@ export default function Landing() {
           <DynamicNotch/>
           <h1 className="land-title">VESSEL</h1>
           <p className="land-sub">
-            Your product ships fast. Your users deserve to know what changed.<br />
-            Vessel turns your commits into <strong>clean, readable changelogs</strong> — without you writing a single word.
+            Your code changed. Your users know the change know instantly!<br />
+            Vessel turns your commits into <strong>clean, readable changelogs</strong> and deploy straight to your app.
           </p>
           <div className="land-actions">
             <Link to="/signup" className="land-btn-primary">
