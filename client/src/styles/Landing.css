@@ -20,21 +20,20 @@
   padding: 0;
 }
 
-.land {
-  height: 100dvh;
+body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--sans);
-  display: flex;
-  flex-direction: column;
-  padding: 0 40px;
-  max-width: 960px;
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
+.land {
+  min-height: 100dvh;
+  background: var(--bg);
+  position: relative;
+}
+
+/* noise */
 .land::before {
   content: '';
   position: fixed;
@@ -45,21 +44,27 @@
   opacity: 0.4;
 }
 
+.land-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
 /* ── Nav ── */
 .land-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 0;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
+  padding: 20px 0;
   border-bottom: 1px solid var(--border);
+  animation: fadeUp 0.4s ease-out both;
 }
 
 .land-logo {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -69,9 +74,7 @@
   gap: 10px;
 }
 
-.land-logo svg {
-  color: var(--subtle);
-}
+.land-logo svg { color: var(--subtle); flex-shrink: 0; }
 
 .land-nav-cta {
   font-family: var(--mono);
@@ -92,45 +95,23 @@
 
 /* ── Hero ── */
 .land-hero {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-  padding: 0;
-}
-
-.land-eyebrow {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--muted);
-  display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  animation: fadeUp 0.5s 0.05s ease-out both;
-}
-
-.land-eyebrow-dot {
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--muted);
-  flex-shrink: 0;
+  justify-content: center;
+  text-align: center;
+  padding: 100px 0 80px;
+  gap: 0;
 }
 
 .land-title {
   font-family: var(--mono);
-  font-size: clamp(64px, 12vw, 120px);
+  font-size: clamp(80px, 16vw, 160px);
   font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 0.9;
-  margin-bottom: 24px;
-  background: linear-gradient(180deg, #ffffff 0%, #444 100%);
+  letter-spacing: -0.04em;
+  line-height: 0.88;
+  margin-bottom: 32px;
+  background: linear-gradient(180deg, #ffffff 30%, #333 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -138,12 +119,17 @@
 }
 
 .land-sub {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--subtle);
   line-height: 1.8;
-  max-width: 520px;
-  margin-bottom: 32px;
+  max-width: 460px;
+  margin-bottom: 40px;
   animation: fadeUp 0.5s 0.2s ease-out both;
+}
+
+.land-sub strong {
+  color: var(--text);
+  font-weight: 400;
 }
 
 .land-actions {
@@ -159,7 +145,7 @@
   gap: 8px;
   background: var(--white);
   color: #000;
-  padding: 11px 24px;
+  padding: 12px 26px;
   border-radius: var(--radius);
   font-family: var(--sans);
   font-size: 14px;
@@ -176,11 +162,11 @@
 
 .land-btn-ghost {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 11px;
   color: var(--subtle);
   text-decoration: none;
   letter-spacing: 0.08em;
-  padding: 11px 16px;
+  padding: 12px 18px;
   border: 1px solid var(--border2);
   border-radius: var(--radius);
   transition: color 0.15s, border-color 0.15s;
@@ -191,6 +177,18 @@
   border-color: var(--muted);
 }
 
+/* ── Divider Label ── */
+.land-section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  padding: 0 0 24px;
+  animation: fadeUp 0.5s 0.35s ease-out both;
+}
+
 /* ── Grid ── */
 .land-grid {
   display: grid;
@@ -198,21 +196,22 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
   animation: fadeUp 0.5s 0.4s ease-out both;
+  margin-bottom: 0;
 }
 
 .land-card {
   background: var(--surface);
-  padding: 18px 20px;
+  padding: 24px;
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  transition: background 0.15s;
 }
+
+.land-card:hover { background: #0d0d0d; }
 
 .land-card:nth-child(3),
 .land-card:nth-child(6) { border-right: none; }
@@ -236,9 +235,9 @@
 .land-card-top svg { color: var(--subtle); flex-shrink: 0; }
 
 .land-card p {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 /* ── Footer ── */
@@ -246,26 +245,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 0;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
+  padding: 20px 0;
   border-top: 1px solid var(--border);
   font-family: var(--mono);
   font-size: 11px;
   color: var(--muted);
   letter-spacing: 0.06em;
+  margin-top: 60px;
   animation: fadeUp 0.5s 0.5s ease-out both;
 }
 
-.land-footer a {
-  color: var(--subtle);
-  text-decoration: none;
-  transition: color 0.15s;
-  margin-left: 4px;
+.land-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.land-footer a:hover { color: var(--text); }
+.land-footer-left a {
+  color: var(--subtle);
+  text-decoration: none;
+  margin-left: 4px;
+  transition: color 0.15s;
+}
+
+.land-footer-left a:hover { color: var(--text); }
 
 .land-footer-links {
   display: flex;
@@ -278,8 +281,9 @@
   align-items: center;
   gap: 6px;
   color: var(--muted);
+  text-decoration: none;
   font-size: 11px;
-  margin-left: 0;
+  transition: color 0.15s;
 }
 
 .land-footer-links a:hover { color: var(--text); }
@@ -290,9 +294,10 @@
 }
 
 @media (max-width: 640px) {
-  .land { padding: 0 20px; }
+  .land-inner { padding: 0 20px; }
   .land-grid { grid-template-columns: 1fr; }
   .land-card { border-right: none; border-bottom: 1px solid var(--border); }
   .land-card:last-child { border-bottom: none; }
-  .land-title { font-size: clamp(52px, 18vw, 80px); }
+  .land-title { font-size: clamp(64px, 20vw, 100px); }
+  .land-footer { flex-direction: column; gap: 12px; text-align: center; }
 }
