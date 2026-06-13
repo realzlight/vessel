@@ -22,7 +22,7 @@ export default function Landing() {
           <h1 className="land-title">VESSEL</h1>
           <p className="land-sub">
             Your code got changed. Your users will know the changes instantly.<br />
-            Vessel turns your commits into <strong class="land-sub-h">clean, readable and ephemeral changelogs</strong>  and deploy straigh in your app.
+            Vessel turns your commits into <strong class="land-sub-h">clean, readable and ephemeral changelogs</strong>  and deploy straight in your app.
           </p>
           <div className="land-actions">
             <Link to="/signup" className="land-btn-primary">
