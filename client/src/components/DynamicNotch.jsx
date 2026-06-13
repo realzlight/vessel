@@ -4,7 +4,7 @@ import '../styles/DynamicNotch.css'
 const messages = [
   "changelog that actually updates itself",
   "less stress, more shipping",
-  "your users will actually know what changed",
+  "Visible User Changelogs!",
   "built for devs who ship fast",
   "no more dead changelogs",
   "just connect your repo & go",

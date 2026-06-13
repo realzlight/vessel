@@ -114,7 +114,7 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 100px 0 80px;
+  padding: 40px 0 80px;  /* Changed from 100px to 40px (reduced by 60px) */
   gap: 0;
 }
 
