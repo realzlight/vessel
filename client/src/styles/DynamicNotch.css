@@ -1,5 +1,6 @@
 .land-notch {
-  display: inline-flex;
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 8px;
   font-family: var(--mono);
@@ -9,34 +10,64 @@
   border: 1px solid var(--border2);
   border-radius: 100px;
   padding: 6px 14px;
-  margin-bottom: 44px;
+  margin: -1px auto 44px;
   cursor: default;
   transition: border-color 0.15s, color 0.15s;
   animation: fadeUp 0.5s 0.05s ease-out both;
-  scale:1.07;
+  scale: 1.07;
+  width: fit-content;
+  position: relative;
+  z-index: 2;
 }
 
 .land-notch:hover {
   border-color: var(--muted);
   color: var(--text);
 }
+
 .notch-text {
   white-space: nowrap;
-  transition: all .3s ease;
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.08em;
   color: var(--text);
+  display: inline-block;
+  min-height: 16px;
 }
 
-.show {
-  opacity: 1;
-  transform: translateY(0);
+/* Apple Music Style Animation */
+.notch-text.show {
+  animation: musicBlurIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-.hide {
-  opacity: 0;
-  transform: translateY(-12px);
+.notch-text.hide {
+  animation: musicBlurOut 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes musicBlurIn {
+  from {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(1.8);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0px);
+    transform: scale(1);
+  }
+}
+
+@keyframes musicBlurOut {
+  from {
+    opacity: 1;
+    filter: blur(0px);
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    filter: blur(12px);
+    transform: scale(0.8);
+  }
 }
 
 @keyframes fadeUp {
