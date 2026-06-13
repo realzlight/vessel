@@ -58,10 +58,13 @@ export default function Signup() {
       const res = await axios.post('/api/auth/signup', { name, username, email, password })
       navigate(`/${res.data.username}`)
     } catch (error) {
-      if (error.response?.data?.field) {
-        setErrors({ [error.response.data.field]: error.response.data.message })
+      const msg = error.response?.data?.message || 'server is napping bud'
+      if (msg.toLowerCase().includes('email')) {
+        setErrors({ email: msg })
+      } else if (msg.toLowerCase().includes('username')) {
+        setErrors({ username: msg })
       } else {
-        setErrors({ general: 'server went brrr, try again' })
+        setErrors({ general: msg })
       }
       setLoading(false)
     }
@@ -70,7 +73,6 @@ export default function Signup() {
   const clearError = (field) => {
     if (errors[field]) setErrors({ ...errors, [field]: '' })
   }
-
   return (
     <div className="auth-page">
       <div className="auth-card">
