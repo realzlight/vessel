@@ -1,9 +1,12 @@
 import '../styles/Landing.css'
 import { Link } from 'react-router-dom'
 import DynamicNotch from '../components/DynamicNotch.jsx'
+import AnimatedBG from '../components/AnimatedBG.jsx'
 
 export default function Landing() {
   return (
+    <>
+    <AnimatedBG/>
     <div className="land">
       <div className="land-inner">
 
@@ -134,5 +137,6 @@ export default function Landing() {
 
       </div>
     </div>
+    </>
   )
 }
