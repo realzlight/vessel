@@ -1,6 +1,6 @@
 import '../styles/Landing.css'
 import { Link } from 'react-router-dom'
-import DynamicNotch from "./components/DynamicNotch";
+import DynamicNotch from "../components/DynamicNotch";
 
 export default function Landing() {
   return (
@@ -23,7 +23,7 @@ export default function Landing() {
           <h1 className="land-title">VESSEL</h1>
           <p className="land-sub">
             Your code got changed. Your users will know the changes instantly.<br />
-            Vessel turns your commits into <strong class="land-sub-h">clean, readable and ephemeral changelogs</strong>  and deploy straight in your app.
+            Vessel turns your commits into <strong >clean, readable and ephemeral changelogs</strong>  and deploy straight in your app.
           </p>
           <div className="land-actions">
             <Link to="/signup" className="land-btn-primary">
@@ -33,6 +33,7 @@ export default function Landing() {
               </svg>
             </Link>
             <Link to="/login" className="land-btn-ghost">Sign in</Link>
+          </div>
           </div>
         </section>
 
@@ -56,7 +57,7 @@ export default function Landing() {
                 <circle cx="12" cy="12" r="10"/>
                 <polyline points="12 6 12 12 16 14"/>
               </svg>
-              Smart intervals
+              Ephemeral intervals
             </div>
             <p>Vessel watches your repo on a schedule. Updates roll out at the right cadence — never too early, never too late.</p>
           </div>
