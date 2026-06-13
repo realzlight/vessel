@@ -20,9 +20,16 @@ export default function Landing() {
 
         <section className="land-hero">
           <div className="land-notch">
-  <span>Stars on GitHub<a className="github-button" href="https://github.com/realzlight/vessel" data-icon="octicon-star" data-show-count="true" aria-label="Star realzlight/vessel on GitHub"> Star</a>
-
-<script async defer src="https://buttons.github.io/buttons.js"></script></span>
+  <span>Stars on GitHub<a 
+  href="https://github.com/your-username/vessel" 
+  target="_blank"
+  className="land-notch"
+>
+  <svg fill="currentColor" viewBox="0 0 16 16">
+    <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/>
+  </svg>
+  <span className="count">{stars >= 1000 ? (stars/1000).toFixed(1) + 'k' : stars}</span>
+</a></span>
   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M5 12h14M12 5l7 7-7 7"/>
   </svg>

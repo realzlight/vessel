@@ -226,6 +226,13 @@ body {
   border-color: var(--muted);
   color: var(--text);
 }
+.land-notch .count{
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  animation:textGradient 2s ease;
+}
 /* ── Divider Label ── */
 .land-section-label {
   font-family: var(--mono);
