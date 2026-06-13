@@ -1,4 +1,4 @@
-import '../styles/landing.css'
+import '../styles/Landing.css'
 import { Link } from 'react-router-dom'
 import DynamicNotch from '../components/DynamicNotch.jsx'
 
