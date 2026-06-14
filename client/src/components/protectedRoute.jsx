@@ -1,35 +1,38 @@
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-export default function protectedRoute({ children }) {
-  const { username } = useParams();
-  const [authUser, setAuthUser] = useState(null);
+export default function ProtectedRoute({ children }) {
+  const [isAuth, setIsAuth] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get logged-in user
-    const verifyAuth = async () => {
+    const checkAuth = async () => {
       try {
+        console.log('Checking auth...');
         const res = await fetch('http://localhost:5000/api/auth/me', {
           method: 'GET',
           credentials: 'include',
         });
 
+        console.log('Auth response:', res.status);
+
         if (res.ok) {
           const data = await res.json();
-          setAuthUser(data.user);
+          console.log('User data:', data);
+          setIsAuth(true);
         } else {
-          setAuthUser(null);
+          console.log('Auth failed');
+          setIsAuth(false);
         }
       } catch (error) {
-        console.error('Auth check failed:', error);
-        setAuthUser(null);
+        console.error('Auth check error:', error);
+        setIsAuth(false);
       } finally {
         setLoading(false);
       }
     };
 
-    verifyAuth();
+    checkAuth();
   }, []);
 
   if (loading) {
@@ -43,46 +46,16 @@ export default function protectedRoute({ children }) {
         color: '#e5e5e5',
         fontFamily: "'Geist Mono', monospace"
       }}>
-        verifying...
+        loading...
       </div>
     );
   }
 
-  // Not logged in
-  if (!authUser) {
+  if (!isAuth) {
+    console.log('Not authenticated, redirecting to login');
     return <Navigate to="/login" replace />;
   }
 
-  // Logged in but trying to access different user's page
-  if (authUser.username !== username) {
-    return (
-      <div style={{
-        minHeight: '100dvh',
-        background: '#000',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#e5e5e5',
-        fontFamily: "'Geist Mono', monospace",
-        textAlign: 'center'
-      }}>
-        <div>
-          <p style={{ marginBottom: '16px' }}>unauthorized access</p>
-          <a
-            href={`/${authUser.username}`}
-            style={{
-              color: '#fafafa',
-              textDecoration: 'underline',
-              fontSize: '12px'
-            }}
-          >
-            go to your dashboard
-          </a>
-        </div>
-      </div>
-    );
-  }
-
-  // Logged in as correct user - show dashboard
+  console.log('Authenticated, showing dashboard');
   return children;
 }

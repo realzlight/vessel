@@ -17,8 +17,8 @@ function App() {
         <Route
           path="/:username"
           element={
-            
-              <Dashboard />
+            <protectedRoute><Dashboard /></protectedRoute>
+              
             
           }
         />
