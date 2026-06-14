@@ -1,6 +1,6 @@
 import express from 'express';
 import user from '../models/user.js';
-import { verifyAuth } from '../middleware/auth.js';
+import { verifyAuth } from '../middlewares/verifyAuth.js';
 
 const router = express.Router();
 
