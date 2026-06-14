@@ -1,31 +1,33 @@
 import { Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-export default function ProtectedRoute({ children }) {
+export default function protectedRoute({ children }) {
   const [isAuth, setIsAuth] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        console.log('Checking auth...');
+        console.log('🔍 Checking auth...');
         const res = await fetch('http://localhost:5000/api/auth/me', {
           method: 'GET',
           credentials: 'include',
         });
 
-        console.log('Auth response:', res.status);
+        console.log('📡 Response status:', res.status);
 
         if (res.ok) {
           const data = await res.json();
-          console.log('User data:', data);
+          console.log('✅ Auth success:', data);
           setIsAuth(true);
         } else {
-          console.log('Auth failed');
+          console.log('❌ Auth failed - status:', res.status);
+          const errorData = await res.json();
+          console.log('Error data:', errorData);
           setIsAuth(false);
         }
       } catch (error) {
-        console.error('Auth check error:', error);
+        console.error('❌ Auth error:', error);
         setIsAuth(false);
       } finally {
         setLoading(false);
@@ -52,10 +54,10 @@ export default function ProtectedRoute({ children }) {
   }
 
   if (!isAuth) {
-    console.log('Not authenticated, redirecting to login');
+    console.log('🚫 Not authenticated - redirecting to login');
     return <Navigate to="/login" replace />;
   }
 
-  console.log('Authenticated, showing dashboard');
+  console.log('✅ Authenticated - showing dashboard');
   return children;
 }
