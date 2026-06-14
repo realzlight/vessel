@@ -2,6 +2,7 @@ import express from 'express'
 import { signup } from '../controllers/authController.js'
 import { login } from '../controllers/authController.js'
 import { me } from '../controllers/me.js'
+import verifyAuth from '../middlewares/verifyAuth.jsx'
 
 const router = express.Router()
 
