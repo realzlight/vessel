@@ -35,7 +35,10 @@ export const signup = async (req, res) => {
       username: username.trim().toLowerCase()
     })
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' })
+    const token = jwt.sign({ 
+  userId: newUser._id,  // ← Change 'id' to 'userId'
+  username: newUser.username 
+}, process.env.JWT_SECRET, { expiresIn: '7d' })
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -75,7 +78,10 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: 'Wrong password' })
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' })
+    const token = jwt.sign({ 
+  userId: user._id,  // ← Change 'id' to 'userId'
+  username: user.username 
+}, process.env.JWT_SECRET, { expiresIn: '7d' })
 
     res.cookie('token', token, {
       httpOnly: true,
