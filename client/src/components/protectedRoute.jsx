@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-export default function protectedRoute({ children }) {
+export default function ProtectedRoute({ children }) {
   const [isAuth, setIsAuth] = useState(null);
   const [loading, setLoading] = useState(true);
 
