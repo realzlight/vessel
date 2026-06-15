@@ -1,17 +1,12 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
-const projectSchema = new Schema({
+const projectSchema = new mongoose.Schema({
   name: { type: String, required: true },
   projectId: { type: String, unique: true, required: true },
   description: { type: String, default: '' },
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  plan: { 
-    type: String, 
-    enum: ['free', 'pro'], 
-    default: 'free' 
-  },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model('Project', userSchema)
+export default mongoose.model('Project', projectSchema);
