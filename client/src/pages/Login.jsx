@@ -15,36 +15,40 @@ export default function Login() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setErrors({})
-    setLoading(true)
+  e.preventDefault()
+  setErrors({})
+  setLoading(true)
 
-    if (!email.trim()) {
-      setErrors({ email: 'email field is ghosting us rn' })
-      setLoading(false)
-      return
-    }
-    if (!password) {
-      setErrors({ password: 'password? yeah we need that too' })
-      setLoading(false)
-      return
-    }
-
-    try {
-      const res = await axios.post('/api/auth/login', { email, password })
-      navigate(`/${res.data.username}`)
-    } catch (error) {
-      const msg = error.response?.data?.message || 'server is napping bud'
-      if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('account')) {
-        setErrors({ email: msg })
-      } else if (msg.toLowerCase().includes('password')) {
-        setErrors({ password: msg })
-      } else {
-        setErrors({ general: msg })
-      }
-      setLoading(false)
-    }
+  if (!email.trim()) {
+    setErrors({ email: 'email field is ghosting us rn' })
+    setLoading(false)
+    return
   }
+  if (!password) {
+    setErrors({ password: 'password? yeah we need that too' })
+    setLoading(false)
+    return
+  }
+
+  try {
+    const res = await axios.post('/api/auth/login', { email, password })
+    
+    // Wait 300ms for cookie to be set
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
+    navigate(`/${res.data.username}`)
+  } catch (error) {
+    const msg = error.response?.data?.message || 'server is napping bud'
+    if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('account')) {
+      setErrors({ email: msg })
+    } else if (msg.toLowerCase().includes('password')) {
+      setErrors({ password: msg })
+    } else {
+      setErrors({ general: msg })
+    }
+    setLoading(false)
+  }
+}
 
   return (
     <div className="auth-page">
