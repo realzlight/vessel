@@ -6,10 +6,7 @@ import dotenv from 'dotenv'
 import connectDB from './configs/db.js'
 import authRoutes from './routes/auth.js'
 
-import axios from 'axios'
 
-axios.defaults.baseURL = 'http://localhost:5000'
-axios.defaults.withCredentials = true  // ← This is key!
 
 //CONFIGS AND MIDDLEWARE
 dotenv.config()

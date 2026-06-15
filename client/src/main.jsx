@@ -1,4 +1,7 @@
+import axios from 'axios'
 
+axios.defaults.baseURL = 'http://localhost:5000'
+axios.defaults.withCredentials = true  // ← This is key!
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
