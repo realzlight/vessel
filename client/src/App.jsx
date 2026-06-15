@@ -3,7 +3,7 @@ import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Dashboard from './pages/Dashboard.jsx'
-import protectedRoute from './components/protectedRoute.jsx'  // Capital P
+import ProtectedRoute from './components/protectedRoute.jsx'  // Capital P
 
 function App() {
   return (
