@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import DynamicNotch from '../components/DynamicNotch.jsx'
 import AnimatedBG from '../components/AnimatedBG.jsx'
 import axios from '../lib/axios.js'
-import PixelSnow from '../components/PixelSnow.jsx'
 
 export default function Landing() {
   return (
