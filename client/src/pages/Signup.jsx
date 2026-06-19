@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import '../styles/auth.css'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axios from '../lib/axios.js'
 
 export default function Signup() {
   const [name, setName] = useState('')

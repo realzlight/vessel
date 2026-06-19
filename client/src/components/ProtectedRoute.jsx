@@ -1,7 +1,7 @@
 // ProtectedRoute.jsx
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import axios from '../lib/axios.js'
 export default function ProtectedRoute({ children }) {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
@@ -10,9 +10,8 @@ export default function ProtectedRoute({ children }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/current-user', {
-          method: 'GET',
-          credentials: 'include', // sends the cookie automatically
+        
+        const res = await axios.get('http://localhost:5000/api/current-user')
         })
 
         if (!res.ok) {

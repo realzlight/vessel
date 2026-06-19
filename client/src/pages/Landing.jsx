@@ -2,6 +2,7 @@ import '../styles/Landing.css'
 import { Link } from 'react-router-dom'
 import DynamicNotch from '../components/DynamicNotch.jsx'
 import AnimatedBG from '../components/AnimatedBG.jsx'
+import axios from '../lib/axios.js'
 
 export default function Landing() {
   return (
