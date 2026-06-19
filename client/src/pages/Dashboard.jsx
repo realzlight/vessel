@@ -117,17 +117,13 @@ export default function Dashboard({ user }) {
     <div className="dashboard">
       <div className="dash-topbar">
         <div className="dash-logo">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-            <path d="M2 17l10 5 10-5"/>
-            <path d="M2 12l10 5 10-5"/>
-          </svg>
+        
           vessel
         </div>
 
         <div className="dash-profile-wrap">
           <div className="dash-profile" onClick={() => setProfileOpen(!profileOpen)}>
-            <span className="dash-username">{user.username}</span>
+            <span className="dash-username">'@'+{user.username}</span>
             <PixelAvatar seed={user.username} size={30} />
           </div>
 
@@ -193,43 +189,46 @@ export default function Dashboard({ user }) {
         )}
 
         {filtered.map((p) => (
-          <div className="project-card" key={p.id}>
-            <div className="project-card-top">
-              <div className="project-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                  <path d="M2 17l10 5 10-5"/>
-                  <path d="M2 12l10 5 10-5"/>
-                </svg>
-              </div>
-
-              <div className="project-menu-wrap">
-                <button
-                  className="project-dots"
-                  onClick={() => setActiveMenu(activeMenu === p.id ? null : p.id)}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="5" cy="12" r="1.8"/>
-                    <circle cx="12" cy="12" r="1.8"/>
-                    <circle cx="19" cy="12" r="1.8"/>
-                  </svg>
-                </button>
-                {activeMenu === p.id && (
-                  <div className="project-dropdown">
-                    <button onClick={() => setActiveMenu(null)}>Edit</button>
-                    <button onClick={() => handleDelete(p.id)}>Delete</button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <p className="project-name">{p.name}</p>
-            <p className="project-link">/dashboard/{p.name}</p>
-            <p className="project-description">{p.description}</p>
-            <p className="project-date">{p.createdAt}</p>
-          </div>
-        ))}
+  <div className="project-card" key={p.id}>
+    <div className="project-card-top">
+      <div className="project-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
       </div>
+
+      <div className="project-menu-wrap">
+        <button
+          className="project-dots"
+          onClick={() => setActiveMenu(activeMenu === p.id ? null : p.id)}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="5" cy="12" r="1.8"/>
+            <circle cx="12" cy="12" r="1.8"/>
+            <circle cx="19" cy="12" r="1.8"/>
+          </svg>
+        </button>
+        {activeMenu === p.id && (
+          <div className="project-dropdown">
+            <button onClick={() => setActiveMenu(null)}>Edit</button>
+            <button onClick={() => handleDelete(p.id)}>Delete</button>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <p className="project-name">{p.name}</p>
+
+    <span className={`project-plan ${p.plan === 'Pro' ? 'plan-pro' : 'plan-free'}`}>
+      {p.plan}
+    </span>
+
+    <p className="project-description">{p.description}</p>
+    <p className="project-date">{p.createdAt}</p>
+  </div>
+))}
 
       {showCreate && (
         <div className="modal-overlay" onClick={() => setShowCreate(false)}>

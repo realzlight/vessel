@@ -22,15 +22,29 @@
   margin-bottom: 24px;
 }
 
-.dash-logo {
+.dash-logo 
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight:600;
+  letter-spacing: 0.5px;
+  color: var(--white);
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--mono);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text);
-  display:none;
+  
+  background: linear-gradient(90deg, hsla(0, 0%, 40%, 1), #fff, hsla(0, 0%, 30%, 1));
+  background-size:200% auto;
+
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+
+  animation:text-gradient 3s linear infinite;
+}
+
+@keyframes text-gradient{
+  0%{ background-position:0% center; }
+  100%{ background-position:200% center; }
 }
 
 .dash-profile-wrap {
@@ -47,7 +61,7 @@
 .dash-username {
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--subtle);
+  color: white;
 }
 
 .pixel-avatar {
@@ -173,12 +187,12 @@
 }
 
 .dashboard-section-label {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.2px;
-  font-family:450;
+  font-family: 'Inter',sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.1px;
+  font-family:500;
   color: white;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 /* Project grid */
@@ -191,11 +205,11 @@
 .project-card {
   background: var(--surface);
   border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  padding: 18px;
+  border-radius: 12px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
   transition: border-color 0.15s, background 0.15s;
 }
 
@@ -208,13 +222,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
 }
 
 .project-icon {
   color: var(--subtle);
   display: flex;
-  display:none;
 }
 
 .project-menu-wrap {
@@ -266,34 +278,45 @@
 
 .project-name {
   font-family: var(--mono);
-  font-size: 18px;
-  font-weight: 550;
+  font-size: 19px;
+  font-weight: 600;
   color: var(--white);
+  margin-top: 2px;
 }
 
-.project-link {
+.project-plan {
+  display: inline-flex;
+  align-self: flex-start;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.plan-free {
+  background: var(--border);
   color: var(--subtle);
-  background-color:white;
-  border-radius:20px;
-  padding:3px;
+}
+
+.plan-pro {
+  background: var(--white);
+  color: #000;
 }
 
 .project-description {
   font-size: 13px;
-  color: grey;
+  color: var(--muted);
   line-height: 1.5;
-  margin-top: 2px;
 }
 
 .project-date {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--muted);
-  margin-top: 6px;
+  margin-top: 4px;
 }
-
 .empty-state {
   grid-column: 1 / -1;
   text-align: center;
