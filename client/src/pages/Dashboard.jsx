@@ -3,36 +3,49 @@ import { useNavigate } from 'react-router-dom'
 import axios from '../lib/axios.js'
 import '../styles/Dashboard.css'
 
+const PALETTE = [
+  { name: 'yellow', hue: 48 },
+  { name: 'red', hue: 0 },
+  { name: 'blue', hue: 215 },
+  { name: 'navy', hue: 230 },
+  { name: 'green', hue: 145 },
+  { name: 'lime', hue: 95 },
+  { name: 'purple', hue: 275 },
+  { name: 'violet', hue: 265 },
+  { name: 'orange', hue: 28 }
+]
+
+function hashStr(str) {
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i)
+    hash |= 0
+  }
+  return Math.abs(hash)
+}
+
 function PixelAvatar({ seed, size = 32 }) {
+  const grid = 8
   const cells = useMemo(() => {
-    let hash = 0
-    for (let i = 0; i < seed.length; i++) {
-      hash = (hash << 5) - hash + seed.charCodeAt(i)
-      hash |= 0
-    }
-    const grid = 5
+    const h = hashStr(seed)
+    const base = PALETTE[h % PALETTE.length].hue
     const out = []
     for (let i = 0; i < grid * grid; i++) {
-      const v = Math.abs((hash * (i + 7) * 2654435761) % 360)
-      const skip = (Math.abs(hash + i * 13) % 5) === 0
-      out.push(skip ? 'transparent' : `hsl(${v}, 65%, 55%)`)
+      const noise = (h * (i + 11) * 2654435761) % 1000
+      const lightness = 25 + (noise % 55) // 25% to 80%
+      const sat = 65 + (noise % 20)
+      out.push(`hsl(${base}, ${sat}%, ${lightness}%)`)
     }
     return out
   }, [seed])
 
   return (
     <div
+      className="pixel-avatar"
       style={{
         width: size,
         height: size,
-        display: 'grid',
-        gridTemplateColumns: 'repeat(5, 1fr)',
-        gap: 1,
-        background: '#111',
-        borderRadius: 6,
-        overflow: 'hidden',
-        flexShrink: 0,
-        cursor: 'pointer'
+        gridTemplateColumns: `repeat(${grid}, 1fr)`
       }}
     >
       {cells.map((c, i) => (
@@ -55,14 +68,12 @@ export default function Dashboard({ user }) {
     {
       id: 1,
       name: 'vaultex-auth',
-      projectId: 'vlx_8f3k2a',
       description: 'JWT auth middleware for Express, published as an npm package.',
       createdAt: '2026-06-10'
     },
     {
       id: 2,
       name: 'embed-widget',
-      projectId: 'emb_9d2j1c',
       description: 'Lightweight embeddable changelog widget for any frontend.',
       createdAt: '2026-06-08'
     }
@@ -79,14 +90,15 @@ export default function Dashboard({ user }) {
 
   const handleCreate = () => {
     if (!newName.trim()) return
-    const newProject = {
-      id: Date.now(),
-      name: newName.trim(),
-      projectId: 'prj_' + Math.random().toString(36).slice(2, 8),
-      description: newDesc.trim(),
-      createdAt: new Date().toISOString().slice(0, 10)
-    }
-    setProjects([newProject, ...projects])
+    setProjects([
+      {
+        id: Date.now(),
+        name: newName.trim(),
+        description: newDesc.trim(),
+        createdAt: new Date().toISOString().slice(0, 10)
+      },
+      ...projects
+    ])
     setNewName('')
     setNewDesc('')
     setShowCreate(false)
@@ -103,16 +115,47 @@ export default function Dashboard({ user }) {
 
   return (
     <div className="dashboard">
-      {/* Top bar */}
       <div className="dash-topbar">
-        <div className="dash-logo">vessel</div>
-        <div className="dash-profile" onClick={() => setProfileOpen(true)}>
-          <span className="dash-username">{user.username}</span>
-          <PixelAvatar seed={user.username} size={30} />
+        <div className="dash-logo">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          vessel
+        </div>
+
+        <div className="dash-profile-wrap">
+          <div className="dash-profile" onClick={() => setProfileOpen(!profileOpen)}>
+            <span className="dash-username">{user.username}</span>
+            <PixelAvatar seed={user.username} size={30} />
+          </div>
+
+          {profileOpen && (
+            <div className="profile-dropdown">
+              <div className="profile-dropdown-top">
+                <PixelAvatar seed={user.username} size={44} />
+              </div>
+              <div className="profile-field">
+                <span className="profile-label">Name</span>
+                <span className="profile-value">{user.name || user.username}</span>
+              </div>
+              <div className="profile-field">
+                <span className="profile-label">Username</span>
+                <span className="profile-value">{user.username}</span>
+              </div>
+              <div className="profile-field">
+                <span className="profile-label">Email</span>
+                <span className="profile-value">{user.email}</span>
+              </div>
+              <button className="dashboard-logout" onClick={handleLogout}>
+                Log out
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Search row */}
       <div className="dash-searchrow">
         <div className="dash-search">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -151,7 +194,7 @@ export default function Dashboard({ user }) {
 
         {filtered.map((p) => (
           <div className="project-card" key={p.id}>
-            <div className="project-header">
+            <div className="project-card-top">
               <div className="project-icon">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M12 2L2 7l10 5 10-5-10-5z"/>
@@ -159,6 +202,7 @@ export default function Dashboard({ user }) {
                   <path d="M2 12l10 5 10-5"/>
                 </svg>
               </div>
+
               <div className="project-menu-wrap">
                 <button
                   className="project-dots"
@@ -187,31 +231,6 @@ export default function Dashboard({ user }) {
         ))}
       </div>
 
-      {/* Profile popup */}
-      {profileOpen && (
-        <div className="modal-overlay" onClick={() => setProfileOpen(false)}>
-          <div className="profile-modal" onClick={(e) => e.stopPropagation()}>
-            <PixelAvatar seed={user.username} size={56} />
-            <div className="profile-field">
-              <span className="profile-label">Name</span>
-              <span className="profile-value">{user.name || user.username}</span>
-            </div>
-            <div className="profile-field">
-              <span className="profile-label">Username</span>
-              <span className="profile-value">{user.username}</span>
-            </div>
-            <div className="profile-field">
-              <span className="profile-label">Email</span>
-              <span className="profile-value">{user.email}</span>
-            </div>
-            <button className="dashboard-logout" onClick={handleLogout}>
-              Log out
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Create project modal */}
       {showCreate && (
         <div className="modal-overlay" onClick={() => setShowCreate(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
