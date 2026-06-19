@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from '../lib/axios.js'
+
 export default function ProtectedRoute({ children }) {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
@@ -10,20 +11,11 @@ export default function ProtectedRoute({ children }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        
         const res = await axios.get('http://localhost:5000/api/current-user')
-        })
-
-        if (!res.ok) {
-          navigate('/login')
-          return
-        }
-
-        const data = await res.json()
-        setUser(data)
+        setUser(res.data)
       } catch (err) {
         console.log(err)
-        navigate('/')
+        navigate('/login')
       } finally {
         setLoading(false)
       }
