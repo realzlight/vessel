@@ -3,7 +3,7 @@ import User from '../models/user.js'
 export const getCurrentUserData = async (req, res) => {
   try {
     // decoded = { id: "mongoObjectId", username: "john" } from your JWT middleware
-    const currentUser = await User.findById(req.user.id).select("-password");
+    const currentUser = await User.findById(req.userId).select("-password");
 
     if (!currentUser) {
       return res.status(401).json({ message: "No Current User :(" });
