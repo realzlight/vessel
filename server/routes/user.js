@@ -1,6 +1,6 @@
 // routes/user.js
 import express from 'express'
-import { verifyAuth } from '../middleware/verifyAuth.js'
+import { verifyAuth } from '../middlewares/verifyAuth.js'
 import { getCurrentUserData } from '../routes/user.js'
 
 const router = express.Router()
