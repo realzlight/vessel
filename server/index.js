@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import connectDB from './configs/db.js'
 import authRoutes from './routes/auth.js'
+import userRoutes from './routes/user.js'
 
 //CONFIGS AND MIDDLEWARE
 dotenv.config()
@@ -33,6 +34,7 @@ const PORT = process.env.PORT || 5000
 
 app.use('/api/auth', authRoutes)
 
+app.use('/api', userRoutes)
 
 
 
