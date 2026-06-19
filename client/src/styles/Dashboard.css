@@ -30,6 +30,7 @@
   font-size: 16px;
   font-weight: 600;
   color: var(--text);
+  display:none;
 }
 
 .dash-profile-wrap {
@@ -52,7 +53,7 @@
 .pixel-avatar {
   display: grid;
   gap: 0;
-  border-radius: 6px;
+  border-radius: 20px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -174,9 +175,9 @@
 .dashboard-section-label {
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--subtle);
+  letter-spacing: 0.2px;
+  font-family:450;
+  color: white;
   margin-bottom: 14px;
 }
 
@@ -213,6 +214,7 @@
 .project-icon {
   color: var(--subtle);
   display: flex;
+  display:none;
 }
 
 .project-menu-wrap {
@@ -264,8 +266,8 @@
 
 .project-name {
   font-family: var(--mono);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 550;
   color: var(--white);
 }
 
@@ -273,11 +275,14 @@
   font-family: var(--mono);
   font-size: 11px;
   color: var(--subtle);
+  background-color:white;
+  border-radius:20px;
+  padding:3px;
 }
 
 .project-description {
   font-size: 13px;
-  color: var(--muted);
+  color: grey;
   line-height: 1.5;
   margin-top: 2px;
 }
