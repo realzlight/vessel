@@ -1,5 +1,6 @@
 import axios from '../lib/axios.js'
 import { useNavigate } from 'react-router-dom'
+import '../styles/Dashborad.css'
 
 export default function Dashboard({ user }) {
   const navigate = useNavigate()
