@@ -1,7 +1,7 @@
 import express from 'express'
 import { signup } from '../controllers/authController.js'
 import { login } from '../controllers/authController.js'
-import { currentUser } from '../controllers/currentUser.js' // <- fixed name
+import { getCurrentUserData } from '../controllers/currentUser.js' // <- fixed name
 import { verifyAuth } from '../middlewares/verifyAuth.js'
 
 const router = express.Router()
