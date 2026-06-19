@@ -5,9 +5,6 @@ import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import connectDB from './configs/db.js'
 import authRoutes from './routes/auth.js'
-import userRoutes from './routes/users.js'
-import projectRoutes from './routes/projects.js'
-
 
 //CONFIGS AND MIDDLEWARE
 dotenv.config()
@@ -28,9 +25,6 @@ app.use((err, req, res, next) => {
 })
 
 
-// Add with other routes
-app.use('/api/users', userRoutes)
-app.use('/api/projects', projectRoutes)
 const PORT = process.env.PORT || 5000
 
 // ROUTE MOUNTING
