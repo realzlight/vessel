@@ -56,7 +56,7 @@ export default function Signup() {
 
     try {
       const res = await axios.post('/api/auth/signup', { name, username, email, password })
-      navigate(`/${res.data.username}`)
+      navigate('/dashboard')
     } catch (error) {
       const msg = error.response?.data?.message || 'server is napping bud'
       if (msg.toLowerCase().includes('email')) {

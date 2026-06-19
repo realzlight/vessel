@@ -16,7 +16,7 @@ export default function ProtectedRoute({ children }) {
         })
 
         if (!res.ok) {
-          navigate('/')
+          navigate('/login')
           return
         }
 

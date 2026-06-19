@@ -36,7 +36,7 @@ export default function Login() {
     // Wait 300ms for cookie to be set
     await new Promise(resolve => setTimeout(resolve, 300))
     
-    navigate(`/${res.data.username}`)
+    navigate('/dashboard')
   } catch (error) {
     const msg = error.response?.data?.message || 'server is napping bud'
     if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('account')) {
