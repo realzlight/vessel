@@ -8,7 +8,7 @@ export default function Dashboard({ user }) {
   const handleLogout = async () => {
     try {
       await axios.post('http://localhost:5000/api/auth/logout')
-      navigate('/login')
+      navigate('/')
     } catch (err) {
       console.log(err)
     }

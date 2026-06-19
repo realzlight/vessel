@@ -15,16 +15,13 @@ function App() {
         
         
         <Route
-          path="/dashboard"
-          element={
-          <ProtectedRoute>
-          <Dashboard />
-          </ProtectedRoute>
-              
-            
-          }
-        />
-      </Routes>
+  path="/dashboard"
+  element={
+    <ProtectedRoute>
+      {(user) => <Dashboard user={user} />}
+    </ProtectedRoute>
+  }
+/>
     </BrowserRouter>
   )
 }
