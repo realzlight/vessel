@@ -3,7 +3,6 @@ import Landing from './pages/Landing.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Dashboard from './pages/Dashboard.jsx'
-import ProtectedRoute from './components/protectedRoute.jsx'  // Capital P
 
 function App() {
   return (
@@ -13,12 +12,12 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         
-        {/* Protected route - wrap Dashboard inside */}
+        
         <Route
           path="/:username"
           element={
-            <ProtectedRoute><Dashboard />
-            </ProtectedRoute>
+          <Dashboard />
+           
               
             
           }
