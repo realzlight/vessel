@@ -8,30 +8,7 @@ import PixelSnow from '../components/PixelSnow.jsx'
 export default function Landing() {
   return (
     <>
-<div style={{ 
-        position: 'fixed', 
-        top: 0, 
-        left: 0, 
-        width: '100vw', 
-        height: '100vh', 
-        zIndex: 0,
-        pointerEvents: 'none'
-      }}>
-        <PixelSnow 
-          color="#ffffff"
-          flakeSize={0.019}
-          minFlakeSize={1.25}
-          pixelResolution={210}
-          speed={0.1}
-          density={0.8}
-          direction={140}
-          brightness={1.7}
-          depthFade={5.5}
-          farPlane={21}
-          gamma={0.4545}
-          variant="snowflake"
-        />
-      </div>
+
       
     <div className="land">
       <div className="land-inner">
