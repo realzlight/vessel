@@ -1,0 +1,29 @@
+.spinner-wrap {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+
+.spinner {
+  position: relative;
+}
+
+.spinner-line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 28%;
+  background: var(--text);
+  border-radius: 2px;
+  transform-origin: 50% 350%;
+  opacity: 0.15;
+  animation: spinnerFade 1s linear infinite;
+}
+
+@keyframes spinnerFade {
+  0% { opacity: 1; }
+  100% { opacity: 0.15; }
+}

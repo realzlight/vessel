@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from '../lib/axios.js'
-
+import LoadingSpinner from '../components/LoadingSpinner.jsx'
 export default function ProtectedRoute({ children }) {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
@@ -25,7 +25,7 @@ export default function ProtectedRoute({ children }) {
     fetchUser()
   }, [navigate])
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <LoadingSpinner/>
   if (!user) return null
 
   return children(user)
