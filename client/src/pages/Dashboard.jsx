@@ -1,15 +1,23 @@
-import react from 'react'
+import axios from '../lib/axios.js'
+import { useNavigate } from 'react-router-dom'
 
+export default function Dashboard({ user }) {
+  const navigate = useNavigate()
 
-function Dashboard(){
+  const handleLogout = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/auth/logout')
+      navigate('/login')
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
-    <>
-      <h1>Dashboard</h1>
-      
-      
-      
-    </>
+    <div>
+      <h1>Welcome {user.username}</h1>
+      <p>Email: {user.email}</p>
+      <button onClick={handleLogout}>Logout</button>
+    </div>
   )
 }
-
-export default Dashboard

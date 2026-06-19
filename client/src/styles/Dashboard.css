@@ -302,3 +302,7 @@
   color: var(--text);
   font-family: var(--mono);
 }
+
+h1{
+  color:white;
+}

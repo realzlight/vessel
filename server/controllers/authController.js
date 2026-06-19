@@ -97,3 +97,13 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Server error' })
   }
 }
+
+export const logout = (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax'
+  })
+  res.status(200).json({ message: 'Logged out' })
+  
+}
