@@ -21,8 +21,10 @@ function App() {
       {(user) => <Dashboard user={user} />}
     </ProtectedRoute>
   }
-/>
-    </BrowserRouter>
+  
+/>   
+</Routes>
+</BrowserRouter>
   )
 }
 
