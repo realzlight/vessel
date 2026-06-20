@@ -299,7 +299,7 @@ export default function Dashboard({ user }) {
               </div>
             </div>
 
-            <span className="project-link">/dashboard/{p.name}</span>
+            <span className="project-link">dashboard/{p.name.toLowerCase()}</span>
             <p className="project-description">{p.description}</p>
             <p className="project-date">{p.createdAt}</p>
           </div>
