@@ -171,10 +171,12 @@ export default function Dashboard({ user }) {
 
   return (
     <div className="dashboard">
-      <div className="dash-topbar">
+      <div className="dash-topbar
+      ">
         <div className="dash-logo">
-          
+          <Link to="/">
           vessel
+          </Link>
         </div>
 
         <div className="dash-profile-wrap">

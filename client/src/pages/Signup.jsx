@@ -88,7 +88,7 @@ export default function Signup() {
         </div>
 
         <div className="auth-header">
-          <h1 className="auth-title">The Awakening.</h1>
+          <h1 className="auth-title">The Awakening!</h1>
           <p className="auth-sub">Create your vessel</p>
         </div>
 
