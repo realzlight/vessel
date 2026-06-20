@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom'
 import DynamicNotch from '../components/DynamicNotch.jsx'
 import AnimatedBG from '../components/AnimatedBG.jsx'
 import axios from '../lib/axios.js'
+import { useUser } from '../context/UserContext.jsx'
+
 
 export default function Landing() {
+  
   return (
     <>
 
@@ -21,7 +24,7 @@ export default function Landing() {
             </svg>
             vessel
           </div>
-          <Link to="/:username" className="land-nav-cta">Get started</Link>
+          <Link to={`/${user.username}`} className="land-nav-cta">Get started</Link>
         </nav>
 
         <section className="land-hero">
@@ -32,7 +35,7 @@ export default function Landing() {
             Vessel turns your commits into <strong>clean, readable changelogs</strong> and deploy straight to your app.
           </p>
           <div className="land-actions">
-            <Link to="/:username" className="land-btn-primary">
+            <Link to={`/${user.username}`} className="land-btn-primary">
               Start building
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -62,7 +65,7 @@ export default function Landing() {
                 <circle cx="12" cy="12" r="10"/>
                 <polyline points="12 6 12 12 16 14"/>
               </svg>
-              Smart intervals
+            Ephemeral intervals
             </div>
             <p>Vessel watches your repo on a schedule. Updates roll out at the right cadence — never too early, never too late.</p>
           </div>

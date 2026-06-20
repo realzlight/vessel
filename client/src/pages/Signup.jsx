@@ -2,6 +2,9 @@ import { useState } from 'react'
 import '../styles/auth.css'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from '../lib/axios.js'
+import { useUser } from '../context/UserContext.jsx'
+
+
 
 export default function Signup() {
   const [name, setName] = useState('')
@@ -56,7 +59,7 @@ export default function Signup() {
 
     try {
       const res = await axios.post('/api/auth/signup', { name, username, email, password })
-      navigate('/:username')
+      navigate(`/${user.username}`)
     } catch (error) {
       const msg = error.response?.data?.message || 'server is napping bud'
       if (msg.toLowerCase().includes('email')) {

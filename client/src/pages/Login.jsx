@@ -2,6 +2,8 @@ import '../styles/auth.css'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from '../lib/axios.js'
+import { useUser } from '../context/UserContext.jsx'
+
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -36,7 +38,7 @@ export default function Login() {
     // Wait 300ms for cookie to be set
     await new Promise(resolve => setTimeout(resolve, 300))
     
-    navigate('/:username')
+    navigate(`/${user.username}`)
   } catch (error) {
     const msg = error.response?.data?.message || 'server is napping bud'
     if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('account')) {
