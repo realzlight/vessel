@@ -22,6 +22,7 @@ export default function ProtectedRoute({ children }) {
         }
 
         setUser(fetchedUser)
+        console.log('fetched:', fetchedUser.username, 'url param:', username)
       } catch (err) {
         console.log(err)
         navigate('/login')
