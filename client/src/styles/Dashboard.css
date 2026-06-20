@@ -27,8 +27,8 @@
   align-items: center;
   gap: 7px;
   font-family: var(--mono);
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 500;
   color: var(--white);
   letter-spacing: 0.3px;
 }
@@ -51,14 +51,26 @@
 
 .dash-username {
   font-family: var(--mono);
-  font-size: 12px;
-  color: var(--subtle);
+  font-size: 14px;
+  background: linear-gradient(90deg, hsla(0, 0%, 40%, 1), #fff, hsla(0, 0%, 30%, 1));
+  background-size:200% auto;
+
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+
+  animation:text-gradient 3s linear infinite;
+}
+
+@keyframes text-gradient{
+  0%{ background-position:0% center; }
+  100%{ background-position:200% center; }
 }
 
 .pixel-avatar {
   display: grid;
   gap: 0;
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -149,15 +161,15 @@
 
 .tier-free {
   color: var(--subtle);
-  background: var(--border);
+  background: white;
 }
 
 .tier-pro {
   color: #fff;
-  background: linear-gradient(120deg, #ec4899, #a855f7, #6366f1, #ec4899);
+  background: linear-gradient(120deg, #fff, black , grey);
   background-size: 300% 300%;
   animation: tierGlow 4s ease infinite;
-  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 0 10px black;
 }
 
 @keyframes tierGlow {
@@ -219,10 +231,10 @@
 .dashboard-section-label {
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--subtle);
+  letter-spacing: 0.2px;
+  color: white;
   margin-bottom: 12px;
+  padding-bottom:8px;
 }
 
 /* Project grid */
@@ -235,7 +247,7 @@
 .project-card {
   background: var(--surface);
   border: 1px solid var(--border2);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
@@ -257,44 +269,46 @@
 .project-title-group {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 10px;
 }
 
 .project-title-group svg {
   color: var(--subtle);
   flex-shrink: 0;
+  display:none;
 }
 
 .project-name {
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--white);
+  margin-left:10px;
 }
 
 .project-top-right {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .project-plan {
   font-family: var(--mono);
   font-size: 9px;
   font-weight: 600;
-  padding: 3px 9px;
+  padding: 5px 10px;
   border-radius: 999px;
   letter-spacing: 0.04em;
 }
 
 .plan-free {
   background: var(--border);
-  color: var(--subtle);
+  color: white;
 }
 
 .plan-pro {
-  background: linear-gradient(120deg, #ec4899, #a855f7, #6366f1);
-  color: #fff;
+  background: linear-gradient(120deg, #fff, #000 , #75778B);
+  color: black;
 }
 
 .project-menu-wrap {
@@ -304,7 +318,7 @@
 .project-dots {
   background: none;
   border: none;
-  color: var(--subtle);
+  color: white;
   cursor: pointer;
   padding: 2px;
   line-height: 0;
@@ -349,8 +363,8 @@
   align-self: flex-start;
   font-family: var(--mono);
   font-size: 10px;
-  color: var(--subtle);
-  background: var(--bg);
+  color: black;
+  background: white;
   border: 1px solid var(--border2);
   padding: 3px 10px;
   border-radius: 999px;
