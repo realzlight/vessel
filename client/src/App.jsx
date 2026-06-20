@@ -15,7 +15,7 @@ function App() {
         
         
         <Route
-  path="/dashboard"
+  path="/:username"
   element={
     <ProtectedRoute>
       {(user) => <Dashboard user={user} />}
