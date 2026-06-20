@@ -11,51 +11,46 @@ export default function Login() {
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { setUser } = useUser()   // ✅ moved here, top level
 
   const clearError = (field) => {
     if (errors[field]) setErrors({ ...errors, [field]: '' })
   }
 
   const handleSubmit = async (e) => {
-  e.preventDefault()
-  setErrors({})
-  setLoading(true)
+    e.preventDefault()
+    setErrors({})
+    setLoading(true)
 
-  if (!email.trim()) {
-    setErrors({ email: 'email field is ghosting us rn' })
-    setLoading(false)
-    return
-  }
-  if (!password) {
-    setErrors({ password: 'password? yeah we need that too' })
-    setLoading(false)
-    return
-  }
-
-  try {
-    
-   const { setUser } = useUser()
-
-// ...inside handleSubmit, on success:
-const res = await axios.post('/api/auth/login', { email, password })
-setUser(res.data)
-navigate(`/${res.data.username}`)  
-    
-    
-  } catch (error) {
-    const msg = error.response?.data?.message || 'server is napping bud'
-    if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('account')) {
-      setErrors({ email: msg })
-    } else if (msg.toLowerCase().includes('password')) {
-      setErrors({ password: msg })
-    } else {
-      setErrors({ general: msg })
+    if (!email.trim()) {
+      setErrors({ email: 'email field is ghosting us rn' })
+      setLoading(false)
+      return
     }
-    setLoading(false)
+    if (!password) {
+      setErrors({ password: 'password? yeah we need that too' })
+      setLoading(false)
+      return
+    }
+
+    try {
+      const res = await axios.post('/api/auth/login', { email, password })
+      setUser(res.data)
+      navigate(`/${res.data.username}`)
+    } catch (error) {
+      const msg = error.response?.data?.message || 'server is napping bud'
+      if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('account')) {
+        setErrors({ email: msg })
+      } else if (msg.toLowerCase().includes('password')) {
+        setErrors({ password: msg })
+      } else {
+        setErrors({ general: msg })
+      }
+      setLoading(false)
+    }
   }
-}
-const user = useUser()
-  return (
+
+  // rest of component (JSX) stays the same  return (
     <div className="auth-page">
       <div className="auth-card">
 

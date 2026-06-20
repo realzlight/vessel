@@ -15,6 +15,7 @@ export default function Signup() {
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { setUser } = useUser()
 
   const handleEmailPassword = (e) => {
     e.preventDefault()
@@ -22,8 +23,6 @@ export default function Signup() {
 
     if (!email.trim()) {
       setErrors({ email: 'email field is ghosting us rn' })
-  const user = useUser()
-  
       return
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -60,14 +59,9 @@ export default function Signup() {
     }
 
     try {
-      
-      const { setUser } = useUser()
-
-// ...on success:
-const res = await axios.post('/api/auth/signup', { email, password, name, username })
-setUser(res.data)
-navigate(`/${res.data.username}`)
-
+      const res = await axios.post('/api/auth/signup', { email, password, name, username })
+      setUser(res.data)
+      navigate(`/${res.data.username}`)
     } catch (error) {
       const msg = error.response?.data?.message || 'server is napping bud'
       if (msg.toLowerCase().includes('email')) {
