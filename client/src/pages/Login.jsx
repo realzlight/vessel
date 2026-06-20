@@ -50,7 +50,8 @@ export default function Login() {
     }
   }
 
-  // rest of component (JSX) stays the same  return (
+  // rest of component (JSX) stays the same 
+  return (
     <div className="auth-page">
       <div className="auth-card">
 
