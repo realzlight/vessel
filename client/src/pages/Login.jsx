@@ -51,7 +51,7 @@ export default function Login() {
     setLoading(false)
   }
 }
-
+const user = useUser()
   return (
     <div className="auth-page">
       <div className="auth-card">

@@ -7,7 +7,7 @@ import { useUser } from '../context/UserContext.jsx'
 
 
 export default function Landing() {
-  
+  const user = useUser()
   return (
     <>
 

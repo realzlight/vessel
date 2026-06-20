@@ -22,6 +22,8 @@ export default function Signup() {
 
     if (!email.trim()) {
       setErrors({ email: 'email field is ghosting us rn' })
+  const user = useUser()
+  
       return
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
