@@ -11,7 +11,7 @@ export default function Landing() {
   return (
     <>
 
-      
+      <AnimatedBG/>
     <div className="land">
       <div className="land-inner">
 
@@ -30,7 +30,7 @@ export default function Landing() {
         </nav>
 
         <section className="land-hero">
-         {/* <DynamicNotch> •  </DynamicNotch>*/}
+         <DynamicNotch> •  </DynamicNotch>
           <h1 className="land-title">VESSEL</h1>
           <p className="land-sub">
             Your code changed. Your users know the change know instantly!<br />
