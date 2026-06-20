@@ -33,13 +33,15 @@ export default function Login() {
   }
 
   try {
-    const res = await axios.post('http://localhost:5000/api/auth/login', { email, password })
     
-    // Wait 300ms for cookie to be set
-    await new Promise(resolve => setTimeout(resolve, 300))
-    
+   const { setUser } = useUser()
 
-navigate(`/${res.data.username}`)
+// ...inside handleSubmit, on success:
+const res = await axios.post('/api/auth/login', { email, password })
+setUser(res.data)
+navigate(`/${res.data.username}`)  
+    
+    
   } catch (error) {
     const msg = error.response?.data?.message || 'server is napping bud'
     if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('account')) {
