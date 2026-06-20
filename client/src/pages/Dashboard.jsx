@@ -25,7 +25,7 @@ function hashStr(str) {
 }
 
 function PixelAvatar({ seed, size = 32 }) {
-  const grid = 8
+  const grid = 12
   const cells = useMemo(() => {
     const h = hashStr(seed)
     const base = PALETTE[h % PALETTE.length].hue
