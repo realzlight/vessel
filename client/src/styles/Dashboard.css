@@ -160,12 +160,12 @@
 }
 
 .tier-free {
-  color: var(--subtle);
+  color: black;
   background: white;
 }
 
 .tier-pro {
-  color: #fff;
+  color: black;
   background: linear-gradient(120deg, #fff, black , grey);
   background-size: 300% 300%;
   animation: tierGlow 4s ease infinite;
