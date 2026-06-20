@@ -173,12 +173,13 @@ export default function Dashboard({ user }) {
     <div className="dashboard">
       <div className="dash-topbar
       ">
+    <Link to="/">
         <div className="dash-logo">
-          <Link to="/">
-          vessel
-          </Link>
-        </div>
 
+          vessel
+
+        </div>
+          </Link>
         <div className="dash-profile-wrap">
           <div className="dash-profile" onClick={() => setProfileOpen(!profileOpen)}>
             <span className="dash-username">@{user.username}</span>
