@@ -32,7 +32,7 @@ function PixelAvatar({ seed, size = 32 }) {
     const out = []
     for (let i = 0; i < grid * grid; i++) {
       const noise = (h * (i + 11) * 2654435761) % 1000
-      const lightness = 25 + (noise % 55) // 25% to 80%
+      const lightness = 25 + (noise % 55)
       const sat = 65 + (noise % 20)
       out.push(`hsl(${base}, ${sat}%, ${lightness}%)`)
     }
@@ -55,26 +55,80 @@ function PixelAvatar({ seed, size = 32 }) {
   )
 }
 
+function PlanSelect({ value, onChange, locked }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="plan-select-wrap">
+      <button type="button" className="plan-select-trigger" onClick={() => setOpen(!open)}>
+        <span className={`plan-select-value ${value === 'Pro' ? 'is-pro' : ''}`}>{value}</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+
+      {open && (
+        <div className="plan-select-menu">
+          <button
+            type="button"
+            className={`plan-option ${value === 'Free' ? 'active' : ''}`}
+            onClick={() => { onChange('Free'); setOpen(false) }}
+          >
+            <span>Free</span>
+          </button>
+
+          <button
+            type="button"
+            className={`plan-option plan-option-pro ${value === 'Pro' ? 'active' : ''} ${locked ? 'locked' : ''}`}
+            onClick={() => {
+              if (locked) return
+              onChange('Pro')
+              setOpen(false)
+            }}
+            disabled={locked}
+          >
+            <span>Pro</span>
+            {locked && (
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="plan-lock-icon">
+                <rect x="5" y="11" width="14" height="9" rx="2"/>
+                <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+              </svg>
+            )}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Dashboard({ user }) {
   const navigate = useNavigate()
+
+  // Account-level tier — wire this up to real billing data later.
+  // 'free' | 'pro'
+  const [tier, setTier] = useState('free')
+
   const [profileOpen, setProfileOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [activeMenu, setActiveMenu] = useState(null)
   const [showCreate, setShowCreate] = useState(false)
   const [newName, setNewName] = useState('')
   const [newDesc, setNewDesc] = useState('')
+  const [newPlan, setNewPlan] = useState('Free')
 
   const [projects, setProjects] = useState([
     {
       id: 1,
       name: 'vaultex-auth',
       description: 'JWT auth middleware for Express, published as an npm package.',
+      plan: 'Pro',
       createdAt: '2026-06-10'
     },
     {
       id: 2,
       name: 'embed-widget',
       description: 'Lightweight embeddable changelog widget for any frontend.',
+      plan: 'Free',
       createdAt: '2026-06-08'
     }
   ])
@@ -95,12 +149,14 @@ export default function Dashboard({ user }) {
         id: Date.now(),
         name: newName.trim(),
         description: newDesc.trim(),
+        plan: newPlan,
         createdAt: new Date().toISOString().slice(0, 10)
       },
       ...projects
     ])
     setNewName('')
     setNewDesc('')
+    setNewPlan('Free')
     setShowCreate(false)
   }
 
@@ -117,14 +173,18 @@ export default function Dashboard({ user }) {
     <div className="dashboard">
       <div className="dash-topbar">
         <div className="dash-logo">
-        
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
           vessel
         </div>
 
         <div className="dash-profile-wrap">
           <div className="dash-profile" onClick={() => setProfileOpen(!profileOpen)}>
-            <span className="dash-username">'@'+{user.username}</span>
-            <PixelAvatar seed={user.username} size={30} />
+            <span className="dash-username">@{user.username}</span>
+            <PixelAvatar seed={user.username} size={28} />
           </div>
 
           {profileOpen && (
@@ -132,18 +192,35 @@ export default function Dashboard({ user }) {
               <div className="profile-dropdown-top">
                 <PixelAvatar seed={user.username} size={44} />
               </div>
+
               <div className="profile-field">
                 <span className="profile-label">Name</span>
                 <span className="profile-value">{user.name || user.username}</span>
               </div>
+
               <div className="profile-field">
                 <span className="profile-label">Username</span>
                 <span className="profile-value">{user.username}</span>
               </div>
+
               <div className="profile-field">
                 <span className="profile-label">Email</span>
                 <span className="profile-value">{user.email}</span>
               </div>
+
+              <div className="profile-tier-row">
+                <span className="profile-label">Plan</span>
+                <div className={`tier-badge ${tier === 'pro' ? 'tier-pro' : 'tier-free'}`}>
+                  {tier === 'free' && (
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="5" y="11" width="14" height="9" rx="2"/>
+                      <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                    </svg>
+                  )}
+                  {tier === 'pro' ? 'PRO' : 'FREE'}
+                </div>
+              </div>
+
               <button className="dashboard-logout" onClick={handleLogout}>
                 Log out
               </button>
@@ -189,46 +266,49 @@ export default function Dashboard({ user }) {
         )}
 
         {filtered.map((p) => (
-  <div className="project-card" key={p.id}>
-    <div className="project-card-top">
-      <div className="project-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-          <path d="M2 17l10 5 10-5"/>
-          <path d="M2 12l10 5 10-5"/>
-        </svg>
-      </div>
+          <div className="project-card" key={p.id}>
+            <div className="project-card-top">
+              <div className="project-title-group">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  <path d="M2 17l10 5 10-5"/>
+                  <path d="M2 12l10 5 10-5"/>
+                </svg>
+                <p className="project-name">{p.name}</p>
+              </div>
 
-      <div className="project-menu-wrap">
-        <button
-          className="project-dots"
-          onClick={() => setActiveMenu(activeMenu === p.id ? null : p.id)}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <circle cx="5" cy="12" r="1.8"/>
-            <circle cx="12" cy="12" r="1.8"/>
-            <circle cx="19" cy="12" r="1.8"/>
-          </svg>
-        </button>
-        {activeMenu === p.id && (
-          <div className="project-dropdown">
-            <button onClick={() => setActiveMenu(null)}>Edit</button>
-            <button onClick={() => handleDelete(p.id)}>Delete</button>
+              <div className="project-top-right">
+                <span className={`project-plan ${p.plan === 'Pro' ? 'plan-pro' : 'plan-free'}`}>
+                  {p.plan}
+                </span>
+
+                <div className="project-menu-wrap">
+                  <button
+                    className="project-dots"
+                    onClick={() => setActiveMenu(activeMenu === p.id ? null : p.id)}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                      <circle cx="5" cy="12" r="1.8"/>
+                      <circle cx="12" cy="12" r="1.8"/>
+                      <circle cx="19" cy="12" r="1.8"/>
+                    </svg>
+                  </button>
+                  {activeMenu === p.id && (
+                    <div className="project-dropdown">
+                      <button onClick={() => setActiveMenu(null)}>Edit</button>
+                      <button onClick={() => handleDelete(p.id)}>Delete</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <span className="project-link">/dashboard/{p.name}</span>
+            <p className="project-description">{p.description}</p>
+            <p className="project-date">{p.createdAt}</p>
           </div>
-        )}
+        ))}
       </div>
-    </div>
-
-    <p className="project-name">{p.name}</p>
-
-    <span className={`project-plan ${p.plan === 'Pro' ? 'plan-pro' : 'plan-free'}`}>
-      {p.plan}
-    </span>
-
-    <p className="project-description">{p.description}</p>
-    <p className="project-date">{p.createdAt}</p>
-  </div>
-))}
 
       {showCreate && (
         <div className="modal-overlay" onClick={() => setShowCreate(false)}>
@@ -244,6 +324,14 @@ export default function Dashboard({ user }) {
             <div className="form-group">
               <label>Description</label>
               <textarea rows={3} value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Plan</label>
+              <PlanSelect
+                value={newPlan}
+                onChange={setNewPlan}
+                locked={tier === 'free'}
+              />
             </div>
             <div className="modal-actions">
               <button className="btn-cancel" onClick={() => setShowCreate(false)}>Cancel</button>
