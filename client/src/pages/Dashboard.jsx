@@ -114,7 +114,7 @@ export default function Dashboard({ user }) {
   const [showCreate, setShowCreate] = useState(false)
   const [newName, setNewName] = useState('')
   const [newDesc, setNewDesc] = useState('')
-  const [newPlan, setNewPlan] = useState('Free')
+  const [newPlan, setNewPlan] = useState('Pro')
 
   const [projects, setProjects] = useState([
     {
