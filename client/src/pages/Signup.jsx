@@ -60,8 +60,8 @@ export default function Signup() {
     }
 
     try {
-      const res = await axios.post('/api/auth/signup', { name, username, email, password })
-      const response = await axios.post('/api/auth/login', { email, password })
+      const res = await axios.post('localhost:5000/api/auth/signup', { name, username, email, password })
+      
 navigate(`/${res.data.username}`)
     } catch (error) {
       const msg = error.response?.data?.message || 'server is napping bud'
