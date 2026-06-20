@@ -24,7 +24,7 @@ export default function Landing() {
             </svg>
             vessel
           </div>
-          <Link to={user ? `/${user.username}` : '/signup'} className="land-nav-cta">
+          <Link to={user ? `/${user.username}` : '/login'} className="land-nav-cta">
   Get started
 </Link>
         </nav>
@@ -37,7 +37,7 @@ export default function Landing() {
             Vessel turns your commits into <strong>clean, readable changelogs</strong> and deploy straight to your app.
           </p>
           <div className="land-actions">
-<Link to={user ? `/${user.username}` : '/signup'} className="land-btn-primary">
+<Link to={user ? `/${user.username}` : '/login'} className="land-btn-primary">
   Start building
   
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
