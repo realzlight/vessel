@@ -33,7 +33,7 @@ export default function Login() {
   }
 
   try {
-    const res = await axios.post('localhost:5000/api/auth/login', { email, password })
+    const res = await axios.post('http://localhost:5000/api/auth/login', { email, password })
     
     // Wait 300ms for cookie to be set
     await new Promise(resolve => setTimeout(resolve, 300))

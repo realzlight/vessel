@@ -60,7 +60,7 @@ export default function Signup() {
     }
 
     try {
-      const res = await axios.post('localhost:5000/api/auth/signup', { name, username, email, password })
+      const res = await axios.post('http://localhost:5000/api/auth/signup', { name, username, email, password })
       
 navigate(`/${res.data.username}`)
     } catch (error) {
