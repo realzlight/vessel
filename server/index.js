@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import connectDB from './configs/db.js'
 import authRoutes from './routes/auth.js'
 import userRoutes from './routes/user.js'
+import passport from './config/passport.js'
 
 //CONFIGS AND MIDDLEWARE
 dotenv.config()
@@ -36,7 +37,7 @@ app.use('/api/auth', authRoutes)
 
 app.use('/api', userRoutes)
 
-
+app.use(passport.initialize())
 
 
 // SERVER LISTENING

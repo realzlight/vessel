@@ -73,7 +73,11 @@ export const login = async (req, res) => {
       return res.status(404).json({ message: 'No account found with this email' })
     }
 
-    const isMatch = await bcrypt.compare(password, user.password)
+    if (!user.password) {
+  return res.status(401).json({ message: 'This account uses Google sign-in' })
+}
+const isMatch = await bcrypt.compare(password, user.password)
+
     if (!isMatch) {
       return res.status(401).json({ message: 'Wrong password' })
     }
@@ -106,4 +110,24 @@ export const logout = (req, res) => {
   })
   res.status(200).json({ message: 'Logged out' })
   
+}
+
+
+export const googleCallback = (req, res) => {
+  const user = req.user
+
+  const token = jwt.sign(
+    { userId: user._id, username: user.username },
+    process.env.JWT_SECRET,
+    { expiresIn: '7d' }
+  )
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  })
+
+  res.redirect(`http://localhost:5173/${user.username}`)
 }
