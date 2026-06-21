@@ -1,0 +1,145 @@
+.dash-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Tier badge in nav */
+.tier-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 5px 12px;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tier-free {
+  color: var(--subtle);
+  background: var(--border);
+}
+
+.tier-pro {
+  color: #fff;
+  background: linear-gradient(120deg, #ec4899, #a855f7, #6366f1, #ec4899);
+  background-size: 300% 300%;
+  animation: tierGlow 4s ease infinite;
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.45);
+}
+
+@keyframes tierGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.tier-lock-icon {
+  flex-shrink: 0;
+}
+
+/* Plan dropdown inside create-project modal */
+.plan-select-wrap {
+  position: relative;
+}
+
+.plan-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.plan-select-value.is-pro {
+  background: linear-gradient(90deg, #ec4899, #a855f7, #6366f1);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: planTextGlow 3s linear infinite;
+  font-weight: 600;
+}
+
+@keyframes planTextGlow {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.plan-select-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #141414;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  z-index: 30;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+.plan-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.plan-option:hover:not(.locked) {
+  background: var(--border);
+}
+
+.plan-option.active {
+  background: var(--border2);
+}
+
+.plan-option-pro:not(.locked) {
+  background: linear-gradient(90deg, rgba(236,72,153,0.12), rgba(168,85,247,0.12), rgba(99,102,241,0.12));
+  background-size: 200% auto;
+  animation: planRowGlow 3s linear infinite;
+}
+
+.plan-option-pro:not(.locked) span {
+  background: linear-gradient(90deg, #ec4899, #a855f7, #6366f1, #ec4899);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: planTextGlow 3s linear infinite;
+  font-weight: 600;
+}
+
+@keyframes planRowGlow {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.plan-option.locked {
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.plan-lock-icon {
+  flex-shrink: 0;
+}

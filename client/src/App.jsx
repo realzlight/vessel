@@ -4,6 +4,8 @@ import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
+import Project from './pages/Project.jsx'
+
 
 function App() {
   return (
@@ -22,6 +24,15 @@ function App() {
     </ProtectedRoute>
   }
   
+/>
+
+<Route
+  path="/:username/:projectname"
+  element={
+    <ProtectedRoute>
+      {(user) => <Project user={user} />}
+    </ProtectedRoute>
+  }
 />   
 </Routes>
 </BrowserRouter>

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from '../lib/axios.js'
 import '../styles/Dashboard.css'
@@ -42,11 +42,7 @@ function PixelAvatar({ seed, size = 32 }) {
   return (
     <div
       className="pixel-avatar"
-      style={{
-        width: size,
-        height: size,
-        gridTemplateColumns: `repeat(${grid}, 1fr)`
-      }}
+      style={{ width: size, height: size, gridTemplateColumns: `repeat(${grid}, 1fr)` }}
     >
       {cells.map((c, i) => (
         <div key={i} style={{ background: c }} />
@@ -55,58 +51,8 @@ function PixelAvatar({ seed, size = 32 }) {
   )
 }
 
-function PlanSelect({ value, onChange, locked }) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div className="plan-select-wrap">
-      <button type="button" className="plan-select-trigger" onClick={() => setOpen(!open)}>
-        <span className={`plan-select-value ${value === 'Pro' ? 'is-pro' : ''}`}>{value}</span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M6 9l6 6 6-6"/>
-        </svg>
-      </button>
-
-      {open && (
-        <div className="plan-select-menu">
-          <button
-            type="button"
-            className={`plan-option ${value === 'Free' ? 'active' : ''}`}
-            onClick={() => { onChange('Free'); setOpen(false) }}
-          >
-            <span>Free</span>
-          </button>
-
-          <button
-            type="button"
-            className={`plan-option plan-option-pro ${value === 'Pro' ? 'active' : ''} ${locked ? 'locked' : ''}`}
-            onClick={() => {
-              if (locked) return
-              onChange('Pro')
-              setOpen(false)
-            }}
-            disabled={locked}
-          >
-            <span>Pro</span>
-            {locked && (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="plan-lock-icon">
-                <rect x="5" y="11" width="14" height="9" rx="2"/>
-                <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
-              </svg>
-            )}
-          </button>
-        </div>
-      )}
-    </div>
-  )
-}
-
 export default function Dashboard({ user }) {
   const navigate = useNavigate()
-
-  // Account-level tier — wire this up to real billing data later.
-  // 'free' | 'pro'
-  const [tier, setTier] = useState('free')
 
   const [profileOpen, setProfileOpen] = useState(false)
   const [search, setSearch] = useState('')
@@ -114,54 +60,61 @@ export default function Dashboard({ user }) {
   const [showCreate, setShowCreate] = useState(false)
   const [newName, setNewName] = useState('')
   const [newDesc, setNewDesc] = useState('')
-  const [newPlan, setNewPlan] = useState('Pro')
+  const [newRepo, setNewRepo] = useState('')
+  const [projects, setProjects] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [createError, setCreateError] = useState('')
 
-  const [projects, setProjects] = useState([
-    {
-      id: 1,
-      name: 'vaultex-auth',
-      description: 'JWT auth middleware for Express, published as an npm package.',
-      plan: 'Pro',
-      createdAt: '2026-06-10'
-    },
-    {
-      id: 2,
-      name: 'embed-widget',
-      description: 'Lightweight embeddable changelog widget for any frontend.',
-      plan: 'Free',
-      createdAt: '2026-06-08'
-    }
-  ])
+  // First project is free. Every project after that costs $5.
+  const hasFreeSlotLeft = projects.length === 0
+
+  useEffect(() => {
+    axios.get('/api/projects')
+      .then(res => setProjects(res.data))
+      .catch(err => console.log(err))
+      .finally(() => setLoading(false))
+  }, [])
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:5000/api/auth/logout')
+      await axios.post('/api/auth/logout')
       navigate('/')
     } catch (err) {
       console.log(err)
     }
   }
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
+    setCreateError('')
     if (!newName.trim()) return
-    setProjects([
-      {
-        id: Date.now(),
+    if (!newRepo.trim()) {
+      setCreateError('add your github repo, fam')
+      return
+    }
+
+    try {
+      const res = await axios.post('/api/projects', {
         name: newName.trim(),
         description: newDesc.trim(),
-        plan: newPlan,
-        createdAt: new Date().toISOString().slice(0, 10)
-      },
-      ...projects
-    ])
-    setNewName('')
-    setNewDesc('')
-    setNewPlan('Free')
-    setShowCreate(false)
+        githubRepo: newRepo.trim()
+      })
+      setProjects([res.data, ...projects])
+      setNewName('')
+      setNewDesc('')
+      setNewRepo('')
+      setShowCreate(false)
+    } catch (err) {
+      setCreateError(err.response?.data?.message || 'something broke, try again')
+    }
   }
 
-  const handleDelete = (id) => {
-    setProjects(projects.filter(p => p.id !== id))
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/api/projects/${id}`)
+      setProjects(projects.filter(p => p._id !== id))
+    } catch (err) {
+      console.log(err)
+    }
     setActiveMenu(null)
   }
 
@@ -171,15 +124,9 @@ export default function Dashboard({ user }) {
 
   return (
     <div className="dashboard">
-      <div className="dash-topbar
-      ">
-        
-        <div className="dash-logo" onClick={() => navigate('/')}>
+      <div className="dash-topbar">
+        <div className="dash-logo" onClick={() => navigate('/')}>vessel</div>
 
-          vessel
-
-        </div>
-      
         <div className="dash-profile-wrap">
           <div className="dash-profile" onClick={() => setProfileOpen(!profileOpen)}>
             <span className="dash-username">@{user.username}</span>
@@ -191,38 +138,19 @@ export default function Dashboard({ user }) {
               <div className="profile-dropdown-top">
                 <PixelAvatar seed={user.username} size={44} />
               </div>
-
               <div className="profile-field">
                 <span className="profile-label">Name</span>
                 <span className="profile-value">{user.name || user.username}</span>
               </div>
-
               <div className="profile-field">
                 <span className="profile-label">Username</span>
                 <span className="profile-value">{user.username}</span>
               </div>
-
               <div className="profile-field">
                 <span className="profile-label">Email</span>
                 <span className="profile-value">{user.email}</span>
               </div>
-
-              <div className="profile-tier-row">
-                <span className="profile-label">Plan</span>
-                <div className={`tier-badge ${tier === 'pro' ? 'tier-pro' : 'tier-free'}`}>
-                  {tier === 'free' && (
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="5" y="11" width="14" height="9" rx="2"/>
-                      <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
-                    </svg>
-                  )}
-                  {tier === 'pro' ? 'PRO' : 'FREE'}
-                </div>
-              </div>
-
-              <button className="dashboard-logout" onClick={handleLogout}>
-                Log out
-              </button>
+              <button className="dashboard-logout" onClick={handleLogout}>Log out</button>
             </div>
           )}
         </div>
@@ -257,15 +185,19 @@ export default function Dashboard({ user }) {
       <div className="dashboard-section-label">Projects</div>
 
       <div className="projects-grid">
-        {filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div className="empty-state">
             <p>No projects yet</p>
-            <p>Create your first project to get started.</p>
+            <p>Your first one's free — create it to get started.</p>
           </div>
         )}
 
         {filtered.map((p) => (
-          <div className="project-card" key={p.id}>
+          <div
+            className="project-card"
+            key={p._id}
+            onClick={() => navigate(`/${user.username}/${p.name.toLowerCase()}`)}
+          >
             <div className="project-card-top">
               <div className="project-title-group">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -276,35 +208,29 @@ export default function Dashboard({ user }) {
                 <p className="project-name">{p.name}</p>
               </div>
 
-              <div className="project-top-right">
-                <span className={`project-plan ${p.plan === 'Pro' ? 'plan-pro' : 'plan-free'}`}>
-                  {p.plan}
-                </span>
-
-                <div className="project-menu-wrap">
-                  <button
-                    className="project-dots"
-                    onClick={() => setActiveMenu(activeMenu === p.id ? null : p.id)}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <circle cx="5" cy="12" r="1.8"/>
-                      <circle cx="12" cy="12" r="1.8"/>
-                      <circle cx="19" cy="12" r="1.8"/>
-                    </svg>
-                  </button>
-                  {activeMenu === p.id && (
-                    <div className="project-dropdown">
-                      <button onClick={() => setActiveMenu(null)}>Edit</button>
-                      <button onClick={() => handleDelete(p.id)}>Delete</button>
-                    </div>
-                  )}
-                </div>
+              <div className="project-menu-wrap">
+                <button
+                  className="project-dots"
+                  onClick={(e) => { e.stopPropagation(); setActiveMenu(activeMenu === p._id ? null : p._id) }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="5" cy="12" r="1.8"/>
+                    <circle cx="12" cy="12" r="1.8"/>
+                    <circle cx="19" cy="12" r="1.8"/>
+                  </svg>
+                </button>
+                {activeMenu === p._id && (
+                  <div className="project-dropdown" onClick={(e) => e.stopPropagation()}>
+                    <button onClick={() => setActiveMenu(null)}>Edit</button>
+                    <button onClick={() => handleDelete(p._id)}>Delete</button>
+                  </div>
+                )}
               </div>
             </div>
 
-            <span className="project-link">{user.username}/{p.name.toLowerCase()}</span>
+            <span className="project-link">github.com/{p.githubRepo}</span>
             <p className="project-description">{p.description}</p>
-            <p className="project-date">{p.createdAt}</p>
+            <p className="project-date">{new Date(p.createdAt).toLocaleDateString()}</p>
           </div>
         ))}
       </div>
@@ -316,25 +242,43 @@ export default function Dashboard({ user }) {
               <h2>New project</h2>
               <button className="modal-close" onClick={() => setShowCreate(false)}>×</button>
             </div>
+
+            {!hasFreeSlotLeft && (
+              <div className="paywall-notice">
+                Your free project is already in use. Additional projects are <strong>$5</strong> each.
+              </div>
+            )}
+
             <div className="form-group">
               <label>Name</label>
               <input value={newName} onChange={(e) => setNewName(e.target.value)} />
             </div>
+
             <div className="form-group">
               <label>Description</label>
               <textarea rows={3} value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
             </div>
+
             <div className="form-group">
-              <label>Plan</label>
-              <PlanSelect
-                value={newPlan}
-                onChange={setNewPlan}
-                locked={tier === 'free'}
-              />
+              <label>GitHub repo</label>
+              <div className="github-input">
+                <span className="github-prefix">github.com/</span>
+                <input
+                  type="text"
+                  placeholder="realzlight/veiled"
+                  value={newRepo}
+                  onChange={(e) => setNewRepo(e.target.value)}
+                />
+              </div>
             </div>
+
+            {createError && <span className="error-text">{createError}</span>}
+
             <div className="modal-actions">
               <button className="btn-cancel" onClick={() => setShowCreate(false)}>Cancel</button>
-              <button className="btn-submit" onClick={handleCreate}>Create</button>
+              <button className="btn-submit" onClick={handleCreate}>
+                {hasFreeSlotLeft ? 'Create' : 'Pay $5 & Create'}
+              </button>
             </div>
           </div>
         </div>

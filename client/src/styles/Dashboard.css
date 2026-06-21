@@ -633,3 +633,45 @@
 .plan-lock-icon {
   flex-shrink: 0;
 }
+
+
+.github-input {
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.github-prefix {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--subtle);
+  padding: 10px 0 10px 12px;
+  white-space: nowrap;
+}
+
+.github-input input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13px;
+  padding: 10px 12px 10px 4px;
+}
+
+.paywall-notice {
+  font-size: 12px;
+  color: var(--subtle);
+  background: var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+
+.paywall-notice strong {
+  color: var(--white);
+}
