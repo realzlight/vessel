@@ -4,7 +4,7 @@ import { login } from '../controllers/authController.js'
 import { getCurrentUserData } from '../controllers/currentUser.js' // <- fixed name
 import { verifyAuth } from '../middlewares/verifyAuth.js'
 import { logout } from '../controllers/authController.js'
-import passport from '../config/passport.js'
+import passport from '../configs/passport.js'
 import { googleCallback } from '../controllers/authController.js'
 
 
