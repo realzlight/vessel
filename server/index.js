@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 import connectDB from './configs/db.js'
 import authRoutes from './routes/auth.js'
 import userRoutes from './routes/user.js'
-import passport from './config/passport.js'
+import passport from './configs/passport.js'
 
 //CONFIGS AND MIDDLEWARE
 dotenv.config()
