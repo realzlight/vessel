@@ -6,16 +6,28 @@ export const processCommits = async (commits) => {
   try {
     const commitText = commits.map(c => `- ${c.message}`).join('\n')
 
-    const prompt = `You are a changelog categorizer. For each commit message below, categorize it as FIX, FEATURE, UPDATED, ADDED, DELETED, or PATCHED, and provide a clean one-line summary. Return ONLY valid JSON with no markdown backticks or preamble.
+    const prompt = `Convert git commits into a user-facing changelog.
+
+Rules:
+- Ignore README/docs/.gitignore/CI/CD/config/dependency-only/package updates, initial commits, uploads, merges, comment typos, and non-user-facing changes.
+- Hide internal details (file paths, APIs, DB structure, endpoints, security internals).
+- Keep only user-visible features, fixes, improvements, content changes, removals, and polish.
+- Categories: FEATURE, FIX, UPDATED, ADDED, PATCHED, DELETED.
+- Rewrite each commit as a short Play Store-style update note.
+- Sort: FEATURE > FIX > UPDATED > ADDED > PATCHED > DELETED.
 
 Commits:
 ${commitText}
 
-Return exactly this JSON structure (no extra text):
+Return only JSON:
 {
   "categorized": [
-    { "hash": "abc123", "message": "original message", "category": "FIX", "summary": "clean one-liner" },
-    ...
+    {
+      "hash": "abc123",
+      "message": "original commit",
+      "category": "FEATURE",
+      "summary": "user-friendly summary"
+    }
   ]
 }`
 
