@@ -8,6 +8,7 @@ export const generateChangelogHtml = (categorized) => {
     PATCHED: 'Patched'
   }
 
+
   const sections = {}
   categorized.forEach(c => {
     if (!sections[c.category]) sections[c.category] = []

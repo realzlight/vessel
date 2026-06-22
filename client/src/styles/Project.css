@@ -7,7 +7,26 @@
   max-width: 700px;
   margin: 0 auto;
 }
+.project-nav{
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 18px;
+}
 
+.project-logo{
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: 0.3px;
+}
 .project-back {
   background: none;
   border: none;

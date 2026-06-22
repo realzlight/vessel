@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from '../lib/axios.js'
 import '../styles/Project.css'
+import { IoSettingsOutline } from "react-icons/io5"
 
 export default function Project({ user }) {
   const { projectname } = useParams()
@@ -22,9 +23,17 @@ export default function Project({ user }) {
 
   return (
     <div className="project-page">
+      
+      <div class="project-nav">
       <button className="project-back" onClick={() => navigate(`/${user.username}`)}>
-        ← back to dashboard
+        ←
       </button>
+      <div className="project-logo" onClick={() => navigate('/')}>vessel</div>
+      
+      <IoSettingsOutline />
+      
+</div>
+
 
       <div className="project-page-header">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
