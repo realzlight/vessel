@@ -245,7 +245,7 @@ export default function Dashboard({ user }) {
 
             {!hasFreeSlotLeft && (
               <div className="paywall-notice">
-                Your free project is already in use. Additional projects are <strong>$5</strong> each.
+                Your free project is already in use. Additional projects are <strong>₹500</strong>each.
               </div>
             )}
 
@@ -276,9 +276,9 @@ export default function Dashboard({ user }) {
 
             <div className="modal-actions">
               <button className="btn-cancel" onClick={() => setShowCreate(false)}>Cancel</button>
-              <button className="btn-submit" onClick={handleCreate}>
-                {hasFreeSlotLeft ? 'Create' : 'Pay $5 & Create'}
-              </button>
+            <button className="btn-submit" onClick={handleCreate}>
+  {hasFreeSlotLeft ? 'Create' : 'Pay ₹500 & Create'}
+</button>
             </div>
           </div>
         </div>
