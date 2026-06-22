@@ -39,6 +39,7 @@ app.use('/api', userRoutes)
 
 app.use(passport.initialize())
 
-
+import projectRoutes from './routes/project.js'
+app.use('/api/projects', projectRoutes)
 // SERVER LISTENING
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
