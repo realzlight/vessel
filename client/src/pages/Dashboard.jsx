@@ -53,7 +53,7 @@ function PixelAvatar({ seed, size = 32 }) {
 
 export default function Dashboard({ user }) {
   const navigate = useNavigate()
-
+  const [processingPayment, setProcessingPayment] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [activeMenu, setActiveMenu] = useState(null)
@@ -74,6 +74,14 @@ export default function Dashboard({ user }) {
       .catch(err => console.log(err))
       .finally(() => setLoading(false))
   }, [])
+  // Load Razorpay script
+  useEffect(() => {
+  const script = document.createElement('script')
+  script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+  script.async = true
+  document.body.appendChild(script)
+  return () => document.body.removeChild(script)
+}, [])
 
   const handleLogout = async () => {
     try {
@@ -85,13 +93,15 @@ export default function Dashboard({ user }) {
   }
 
   const handleCreate = async () => {
-    setCreateError('')
-    if (!newName.trim()) return
-    if (!newRepo.trim()) {
-      setCreateError('add your github repo, fam')
-      return
-    }
+  setCreateError('')
+  if (!newName.trim()) return
+  if (!newRepo.trim()) {
+    setCreateError('add your github repo, fam')
+    return
+  }
 
+  if (hasFreeSlotLeft) {
+    // First project is free
     try {
       const res = await axios.post('/api/projects', {
         name: newName.trim(),
@@ -106,7 +116,11 @@ export default function Dashboard({ user }) {
     } catch (err) {
       setCreateError(err.response?.data?.message || 'something broke, try again')
     }
+  } else {
+    // Subsequent projects require payment
+    initiatePayment()
   }
+}
 
   const handleDelete = async (id) => {
     try {
@@ -121,6 +135,61 @@ export default function Dashboard({ user }) {
   const filtered = projects.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase())
   )
+
+const initiatePayment = async () => {
+  setProcessingPayment(true)
+  try {
+    const orderRes = await axios.post('/api/projects/payment/create-order', {
+      projectName: newName.trim()
+    })
+
+    const { orderId, amount, currency, keyId } = orderRes.data
+
+    const options = {
+      key: keyId,
+      amount: amount,
+      currency: currency,
+      order_id: orderId,
+      name: 'Vessel',
+      description: `Create project: ${newName.trim()}`,
+      prefill: {
+        email: user.email,
+        contact: ''
+      },
+      handler: async (response) => {
+        try {
+          const verifyRes = await axios.post('/api/projects/payment/verify', {
+            paymentId: response.razorpay_payment_id,
+            orderId: response.razorpay_order_id,
+            signature: response.razorpay_signature,
+            name: newName.trim(),
+            description: newDesc.trim(),
+            githubRepo: newRepo.trim()
+          })
+
+          setProjects([verifyRes.data, ...projects])
+          setNewName('')
+          setNewDesc('')
+          setNewRepo('')
+          setShowCreate(false)
+        } catch (err) {
+          setCreateError('Payment verified but project creation failed. Try again.')
+        }
+      },
+      modal: {
+        ondismiss: () => {
+          setProcessingPayment(false)
+        }
+      }
+    }
+
+    const rzp = new window.Razorpay(options)
+    rzp.open()
+  } catch (err) {
+    setCreateError(err.response?.data?.message || 'Failed to initiate payment')
+    setProcessingPayment(false)
+  }
+}
 
   return (
     <div className="dashboard">
