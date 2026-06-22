@@ -191,6 +191,38 @@ const initiatePayment = async () => {
   }
 }
 
+
+const [editingId, setEditingId] = useState(null)
+const [editName, setEditName] = useState('')
+const [editDesc, setEditDesc] = useState('')
+const [editRepo, setEditRepo] = useState('')
+
+const handleEditStart = (project) => {
+  setEditingId(project._id)
+  setEditName(project.name)
+  setEditDesc(project.description)
+  setEditRepo(project.githubRepo)
+  setActiveMenu(null)
+}
+
+const handleEditSave = async () => {
+  try {
+    const res = await axios.put(`/api/projects/${editingId}`, {
+      name: editName.trim(),
+      description: editDesc.trim(),
+      githubRepo: editRepo.trim()
+    })
+    setProjects(projects.map(p => p._id === editingId ? res.data : p))
+    setEditingId(null)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const handleEditCancel = () => {
+  setEditingId(null)
+}
+
   return (
     <div className="dashboard">
       <div className="dash-topbar">
@@ -289,11 +321,11 @@ const initiatePayment = async () => {
                   </svg>
                 </button>
                 {activeMenu === p._id && (
-                  <div className="project-dropdown" onClick={(e) => e.stopPropagation()}>
-                    <button onClick={() => setActiveMenu(null)}>Edit</button>
-                    <button onClick={() => handleDelete(p._id)}>Delete</button>
-                  </div>
-                )}
+  <div className="project-dropdown" onClick={(e) => e.stopPropagation()}>
+    <button onClick={() => handleEditStart(p)}>Edit</button>
+    <button onClick={() => handleDelete(p._id)}>Delete</button>
+  </div>
+)}
               </div>
             </div>
 
@@ -352,6 +384,16 @@ const initiatePayment = async () => {
           </div>
         </div>
       )}
+      
+      
+      
+      
+      
+      
+      
     </div>
+    
+    
+  
   )
 }
