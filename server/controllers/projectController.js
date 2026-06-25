@@ -1,11 +1,15 @@
+
 import Project from '../models/project.js'
+import { getRepoCommits } from '../services/githubService.js'
+import { processCommits } from '../services/geminiService.js'
+import { generateChangelogHtml } from '../services/changelogTemplate.js'
 
 export const getProjects = async (req, res) => {
   try {
     const projects = await Project.find({ owner: req.user.userId }).sort({ createdAt: -1 })
     res.status(200).json(projects)
   } catch (err) {
-    res.status(500).json({ message: 'Server error' })
+    res.status(500).json({ message: 'Server error!!' })
   }
 }
 
@@ -18,7 +22,7 @@ export const createProject = async (req, res) => {
 
     const existingCount = await Project.countDocuments({ owner: req.user.userId })
     if (existingCount >= 1) {
-      return res.status(402).json({ message: 'Free project limit reached. Additional projects are $5 each.' })
+      return res.status(402).json({ message: 'Free project limit reached. Additional projects cost ₹500 each.' })
     }
 
     const project = await Project.create({
@@ -54,21 +58,28 @@ export const deleteProject = async (req, res) => {
   }
 }
 
-import { getRepoCommits } from '../services/githubService.js'
-import { processCommits } from '../services/geminiService.js'
-import { generateChangelogHtml } from '../services/changelogTemplate.js'
-
 export const deployChangelog = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
     if (!project) return res.status(404).json({ message: 'Project not found' })
     if (project.owner.toString() !== req.user.userId) return res.status(403).json({ message: 'Not authorized' })
 
+    // Smart refresh: check for new commits
     const commits = await getRepoCommits(project.githubRepo)
+    
     if (!commits || commits.length === 0) {
-      return res.status(400).json({ message: 'No commits found in repo' })
+      return res.status(400).json({ message: 'No commits found. Skipping refresh to save server resources.' })
     }
 
+    // Check if commits are actually new
+    const lastDeployed = project.deployment?.lastDeployed
+    const hasNewCommits = !lastDeployed || commits.some(c => new Date(c.timestamp) > new Date(lastDeployed))
+
+    if (!hasNewCommits) {
+      return res.status(200).json({ message: 'No new commits. Skipping refresh.', html: project.deployment.changelogHtml })
+    }
+
+    // Process and deploy
     const categorized = await processCommits(commits)
     const changelogHtml = generateChangelogHtml(categorized)
 
@@ -89,7 +100,6 @@ export const getChangelog = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
     if (!project) return res.status(404).json({ message: 'Project not found' })
-
     res.status(200).json({ html: project.deployment.changelogHtml || '' })
   } catch (err) {
     res.status(500).json({ message: 'Server error' })
