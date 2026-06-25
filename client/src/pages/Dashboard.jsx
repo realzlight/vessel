@@ -1,399 +1,222 @@
-import { useState, useEffect, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import axios from '../lib/axios.js'
-import '../styles/Dashboard.css'
+import '../styles/Project.css'
 
-const PALETTE = [
-  { name: 'yellow', hue: 48 },
-  { name: 'red', hue: 0 },
-  { name: 'blue', hue: 215 },
-  { name: 'navy', hue: 230 },
-  { name: 'green', hue: 145 },
-  { name: 'lime', hue: 95 },
-  { name: 'purple', hue: 275 },
-  { name: 'violet', hue: 265 },
-  { name: 'orange', hue: 28 }
+const INTERVALS = [
+  { value: '15min', label: '15 min', ms: 15 * 60 * 1000 },
+  { value: '30min', label: '30 min', ms: 30 * 60 * 1000 },
+  { value: '1hr', label: '1 hr', ms: 60 * 60 * 1000 },
+  { value: '5hr', label: '5 hr', ms: 5 * 60 * 60 * 1000 },
+  { value: '10hr', label: '10 hr', ms: 10 * 60 * 60 * 1000 },
+  { value: '24hr', label: '24 hr', ms: 24 * 60 * 60 * 1000 },
+  { value: '7days', label: '7 days', ms: 7 * 24 * 60 * 60 * 1000 }
 ]
 
-function hashStr(str) {
-  let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i)
-    hash |= 0
-  }
-  return Math.abs(hash)
-}
-
-function PixelAvatar({ seed, size = 32 }) {
-  const grid = 8
-  const cells = useMemo(() => {
-    const h = hashStr(seed)
-    const base = PALETTE[h % PALETTE.length].hue
-    const out = []
-    for (let i = 0; i < grid * grid; i++) {
-      const noise = (h * (i + 11) * 2654435761) % 1000
-      const lightness = 25 + (noise % 55)
-      const sat = 65 + (noise % 20)
-      out.push(`hsl(${base}, ${sat}%, ${lightness}%)`)
-    }
-    return out
-  }, [seed])
-
-  return (
-    <div
-      className="pixel-avatar"
-      style={{ width: size, height: size, gridTemplateColumns: `repeat(${grid}, 1fr)` }}
-    >
-      {cells.map((c, i) => (
-        <div key={i} style={{ background: c }} />
-      ))}
-    </div>
-  )
-}
-
-export default function Dashboard({ user }) {
+export default function Project({ user }) {
+  const { projectname } = useParams()
   const navigate = useNavigate()
-  const [processingPayment, setProcessingPayment] = useState(false)
-  const [profileOpen, setProfileOpen] = useState(false)
-  const [search, setSearch] = useState('')
-  const [activeMenu, setActiveMenu] = useState(null)
-  const [showCreate, setShowCreate] = useState(false)
-  const [newName, setNewName] = useState('')
-  const [newDesc, setNewDesc] = useState('')
-  const [newRepo, setNewRepo] = useState('')
-  const [projects, setProjects] = useState([])
+
+  const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [createError, setCreateError] = useState('')
-
-  // First project is free. Every project after that costs $5.
-  const hasFreeSlotLeft = projects.length === 0
+  const [error, setError] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [deploying, setDeploying] = useState(false)
+  const [timeUntilRefresh, setTimeUntilRefresh] = useState('')
+  const [logs, setLogs] = useState([])
 
   useEffect(() => {
-    axios.get('/api/projects')
-      .then(res => setProjects(res.data))
-      .catch(err => console.log(err))
+    axios.get(`/api/projects/${projectname}`)
+      .then(res => setProject(res.data))
+      .catch(() => setError(true))
       .finally(() => setLoading(false))
-  }, [])
-  // Load Razorpay script
+  }, [projectname])
+
+  // Timer countdown
   useEffect(() => {
-  const script = document.createElement('script')
-  script.src = 'https://checkout.razorpay.com/v1/checkout.js'
-  script.async = true
-  document.body.appendChild(script)
-  return () => document.body.removeChild(script)
-}, [])
+    if (!project?.deployment?.lastDeployed) return
 
-  const handleLogout = async () => {
-    try {
-      await axios.post('/api/auth/logout')
-      navigate('/')
-    } catch (err) {
-      console.log(err)
-    }
-  }
+    const interval = setInterval(() => {
+      const intervalConfig = INTERVALS.find(i => i.value === project.deployment.interval) || INTERVALS[1]
+      const nextRefresh = new Date(project.deployment.lastDeployed).getTime() + intervalConfig.ms
+      const now = Date.now()
+      const diff = nextRefresh - now
 
-  const handleCreate = async () => {
-  setCreateError('')
-  if (!newName.trim()) return
-  if (!newRepo.trim()) {
-    setCreateError('add your github repo, fam')
-    return
-  }
-
-  if (hasFreeSlotLeft) {
-    // First project is free
-    try {
-      const res = await axios.post('/api/projects', {
-        name: newName.trim(),
-        description: newDesc.trim(),
-        githubRepo: newRepo.trim()
-      })
-      setProjects([res.data, ...projects])
-      setNewName('')
-      setNewDesc('')
-      setNewRepo('')
-      setShowCreate(false)
-    } catch (err) {
-      setCreateError(err.response?.data?.message || 'something broke, try again')
-    }
-  } else {
-    // Subsequent projects require payment
-    initiatePayment()
-  }
-}
-
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`/api/projects/${id}`)
-      setProjects(projects.filter(p => p._id !== id))
-    } catch (err) {
-      console.log(err)
-    }
-    setActiveMenu(null)
-  }
-
-  const filtered = projects.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  )
-
-const initiatePayment = async () => {
-  setProcessingPayment(true)
-  try {
-    const orderRes = await axios.post('/api/projects/payment/create-order', {
-      projectName: newName.trim()
-    })
-
-    const { orderId, amount, currency, keyId } = orderRes.data
-
-    const options = {
-      key: keyId,
-      amount: amount,
-      currency: currency,
-      order_id: orderId,
-      name: 'Vessel',
-      description: `Create project: ${newName.trim()}`,
-      prefill: {
-        email: user.email,
-        contact: ''
-      },
-      handler: async (response) => {
-        try {
-          const verifyRes = await axios.post('/api/projects/payment/verify', {
-            paymentId: response.razorpay_payment_id,
-            orderId: response.razorpay_order_id,
-            signature: response.razorpay_signature,
-            name: newName.trim(),
-            description: newDesc.trim(),
-            githubRepo: newRepo.trim()
-          })
-
-          setProjects([verifyRes.data, ...projects])
-          setNewName('')
-          setNewDesc('')
-          setNewRepo('')
-          setShowCreate(false)
-        } catch (err) {
-          setCreateError('Payment verified but project creation failed. Try again.')
-        }
-      },
-      modal: {
-        ondismiss: () => {
-          setProcessingPayment(false)
-        }
+      if (diff <= 0) {
+        setTimeUntilRefresh('ready to refresh')
+      } else {
+        const hrs = Math.floor(diff / (60 * 60 * 1000))
+        const mins = Math.floor((diff % (60 * 60 * 1000)) / (60 * 1000))
+        const secs = Math.floor((diff % (60 * 1000)) / 1000)
+        setTimeUntilRefresh(`${hrs}h ${mins}m ${secs}s`)
       }
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [project])
+
+  const addLog = (message, type = 'info') => {
+    const timestamp = new Date().toLocaleTimeString()
+    setLogs(prev => [...prev, { message, type, timestamp }])
+  }
+
+  const handleDeploy = async () => {
+    setDeploying(true)
+    setLogs([])
+    addLog('Starting deployment...', 'info')
+    
+    try {
+      addLog(`Fetching commits from ${project.githubRepo}...`, 'info')
+      const res = await axios.post(`/api/projects/${project._id}/deploy`)
+      
+      addLog('Processing commits with AI...', 'info')
+      addLog('Generating changelog HTML...', 'info')
+      addLog('✓ Deployment successful', 'success')
+      
+      setProject({
+        ...project,
+        deployment: {
+          ...project.deployment,
+          changelogHtml: res.data.html,
+          lastDeployed: new Date().toISOString(),
+          status: 'deployed'
+        }
+      })
+    } catch (err) {
+      const errorMsg = err.response?.data?.message || err.message
+      addLog(`✗ ${errorMsg}`, 'error')
+    } finally {
+      setDeploying(false)
     }
-
-    const rzp = new window.Razorpay(options)
-    rzp.open()
-  } catch (err) {
-    setCreateError(err.response?.data?.message || 'Failed to initiate payment')
-    setProcessingPayment(false)
   }
-}
 
-
-const [editingId, setEditingId] = useState(null)
-const [editName, setEditName] = useState('')
-const [editDesc, setEditDesc] = useState('')
-const [editRepo, setEditRepo] = useState('')
-
-const handleEditStart = (project) => {
-  setEditingId(project._id)
-  setEditName(project.name)
-  setEditDesc(project.description)
-  setEditRepo(project.githubRepo)
-  setActiveMenu(null)
-}
-
-const handleEditSave = async () => {
-  try {
-    const res = await axios.put(`/api/projects/${editingId}`, {
-      name: editName.trim(),
-      description: editDesc.trim(),
-      githubRepo: editRepo.trim()
-    })
-    setProjects(projects.map(p => p._id === editingId ? res.data : p))
-    setEditingId(null)
-  } catch (err) {
-    console.log(err)
+  const handleStop = async () => {
+    try {
+      addLog('Stopping auto-deploy...', 'info')
+      await axios.post(`/api/projects/${project._id}/stop-deploy`)
+      setProject({
+        ...project,
+        deployment: { ...project.deployment, isAutoDeployEnabled: false }
+      })
+      addLog('✓ Auto-deploy stopped', 'success')
+    } catch (err) {
+      addLog('✗ Failed to stop deploy', 'error')
+    }
   }
-}
 
-const handleEditCancel = () => {
-  setEditingId(null)
-}
+  const handleIntervalChange = async (interval) => {
+    try {
+      addLog(`Changing refresh interval to ${INTERVALS.find(i => i.value === interval)?.label}...`, 'info')
+      await axios.put(`/api/projects/${project._id}/deploy-settings`, { interval })
+      setProject({ ...project, deployment: { ...project.deployment, interval } })
+      addLog('✓ Interval updated', 'success')
+      setSettingsOpen(false)
+    } catch (err) {
+      addLog('✗ Failed to update interval', 'error')
+    }
+  }
+
+  if (loading) return <div className="project-loading">Loading...</div>
+  if (error || !project) return <div className="project-loading">Project not found</div>
+
+  const isDeployed = project.deployment?.changelogHtml
+  const currentInterval = INTERVALS.find(i => i.value === project.deployment?.interval) || INTERVALS[1]
 
   return (
-    <div className="dashboard">
-      <div className="dash-topbar">
-        <div className="dash-logo" onClick={() => navigate('/')}>vessel</div>
+    <div className="project-page">
+      {/* Nav */}
+      <div className="project-nav">
+        <button className="project-back" onClick={() => navigate(`/${user.username}`)}>
+          ←
+        </button>
+        <div className="project-logo">vessel</div>
+        <div className="project-nav-spacer" />
+        
+        <div className="project-settings-wrap">
+          <button className="project-settings-btn" onClick={() => setSettingsOpen(!settingsOpen)}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m5.08 5.08l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m5.08-5.08l4.24-4.24"/>
+            </svg>
+          </button>
 
-        <div className="dash-profile-wrap">
-          <div className="dash-profile" onClick={() => setProfileOpen(!profileOpen)}>
-            <span className="dash-username">@{user.username}</span>
-            <PixelAvatar seed={user.username} size={28} />
-          </div>
-
-          {profileOpen && (
-            <div className="profile-dropdown">
-              <div className="profile-dropdown-top">
-                <PixelAvatar seed={user.username} size={44} />
-              </div>
-              <div className="profile-field">
-                <span className="profile-label">Name</span>
-                <span className="profile-value">{user.name || user.username}</span>
-              </div>
-              <div className="profile-field">
-                <span className="profile-label">Username</span>
-                <span className="profile-value">{user.username}</span>
-              </div>
-              <div className="profile-field">
-                <span className="profile-label">Email</span>
-                <span className="profile-value">{user.email}</span>
-              </div>
-              <button className="dashboard-logout" onClick={handleLogout}>Log out</button>
+          {settingsOpen && (
+            <div className="project-settings-menu">
+              <div className="settings-label">Refresh interval</div>
+              {INTERVALS.map(i => (
+                <button
+                  key={i.value}
+                  className={`settings-option ${project.deployment?.interval === i.value ? 'active' : ''}`}
+                  onClick={() => handleIntervalChange(i.value)}
+                >
+                  {i.label}
+                </button>
+              ))}
             </div>
           )}
         </div>
       </div>
 
-      <div className="dash-searchrow">
-        <div className="dash-search">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="M21 21l-4.35-4.35"/>
-          </svg>
-          <input
-            placeholder="Search projects..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+      {/* Content */}
+      <div className="project-container">
+        <div className="project-header">
+          <h1>{project.name}</h1>
+          <a className="project-repo" href={`https://github.com/${project.githubRepo}`} target="_blank" rel="noreferrer">
+            github.com/{project.githubRepo}
+          </a>
+          {project.description && <p className="project-desc">{project.description}</p>}
         </div>
-        <button className="dash-iconbtn" title="Filter">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="4" y1="6" x2="20" y2="6"/>
-            <line x1="8" y1="12" x2="16" y2="12"/>
-            <line x1="11" y1="18" x2="13" y2="18"/>
-          </svg>
-        </button> 
-        <button className="dash-iconbtn dash-add" onClick={() => setShowCreate(true)} title="New project">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 5v14M5 12h14"/>
-          </svg>
-        </button>
-      </div>
 
-      <div className="dashboard-section-label">Projects</div>
-
-      <div className="projects-grid">
-        {!loading && filtered.length === 0 && (
-          <div className="empty-state">
-            <p>No projects yet</p>
-            <p>Your first one's free — create it to get started.</p>
-          </div>
-        )}
-
-        {filtered.map((p) => (
-          <div
-            className="project-card"
-            key={p._id}
-            onClick={() => navigate(`/${user.username}/${p.name.toLowerCase()}`)}
-          >
-            <div className="project-card-top">
-              <div className="project-title-group">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                  <path d="M2 17l10 5 10-5"/>
-                  <path d="M2 12l10 5 10-5"/>
-                </svg>
-                <p className="project-name">{p.name}</p>
-              </div>
-
-              <div className="project-menu-wrap">
-                <button
-                  className="project-dots"
-                  onClick={(e) => { e.stopPropagation(); setActiveMenu(activeMenu === p._id ? null : p._id) }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="5" cy="12" r="1.8"/>
-                    <circle cx="12" cy="12" r="1.8"/>
-                    <circle cx="19" cy="12" r="1.8"/>
-                  </svg>
-                </button>
-                {activeMenu === p._id && (
-  <div className="project-dropdown" onClick={(e) => e.stopPropagation()}>
-    <button onClick={() => handleEditStart(p)}>Edit</button>
-    <button onClick={() => handleDelete(p._id)}>Delete</button>
-  </div>
-)}
-              </div>
+        {/* Changelog Preview */}
+        <div className="changelog-window">
+          <div className="changelog-top">
+            <span className="changelog-label">{project.name}</span>
+            <div className="changelog-status">
+              {isDeployed && <span className="status-dot" />}
+              <span>{isDeployed ? 'live' : 'not deployed'}</span>
+              {isDeployed && <span className="status-timer">{timeUntilRefresh}</span>}
             </div>
-
-            <span className="project-link">github.com/{p.githubRepo}</span>
-            <p className="project-description">{p.description}</p>
-            <p className="project-date">{new Date(p.createdAt).toLocaleDateString()}</p>
           </div>
-        ))}
-      </div>
-
-      {showCreate && (
-        <div className="modal-overlay" onClick={() => setShowCreate(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>New project</h2>
-              <button className="modal-close" onClick={() => setShowCreate(false)}>×</button>
-            </div>
-
-            {!hasFreeSlotLeft && (
-              <div className="paywall-notice">
-                Your free project is already in use. Additional projects are <strong>₹500</strong>each.
+          <div className="changelog-frame">
+            {isDeployed ? (
+              <iframe srcDoc={project.deployment.changelogHtml} title="changelog" />
+            ) : (
+              <div className="changelog-empty">
+                <p>No changelog deployed</p>
+                <p>Hit deploy to generate from your commits</p>
               </div>
             )}
-
-            <div className="form-group">
-              <label>Name</label>
-              <input value={newName} onChange={(e) => setNewName(e.target.value)} />
-            </div>
-
-            <div className="form-group">
-              <label>Description</label>
-              <textarea rows={3} value={newDesc} onChange={(e) => setNewDesc(e.target.value)} />
-            </div>
-
-            <div className="form-group">
-              <label>GitHub repo</label>
-              <div className="github-input">
-                <span className="github-prefix">github.com/</span>
-                <input
-                  type="text"
-                  placeholder="realzlight/veiled"
-                  value={newRepo}
-                  onChange={(e) => setNewRepo(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {createError && <span className="error-text">{createError}</span>}
-
-            <div className="modal-actions">
-              <button className="btn-cancel" onClick={() => setShowCreate(false)}>Cancel</button>
-            <button className="btn-submit" onClick={handleCreate}>
-  {hasFreeSlotLeft ? 'Create' : 'Pay ₹500 & Create'}
-</button>
-            </div>
           </div>
         </div>
-      )}
-      
-      
-      
-      
-      
-      
-      
+
+        {/* Terminal Log */}
+        <div className="terminal-log">
+          <div className="terminal-header">deploy log</div>
+          <div className="terminal-body">
+            {logs.length === 0 ? (
+              <div className="terminal-empty">Ready to deploy</div>
+            ) : (
+              logs.map((log, i) => (
+                <div key={i} className={`terminal-line ${log.type}`}>
+                  <span className="terminal-time">{log.timestamp}</span>
+                  <span className="terminal-msg">{log.message}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="project-actions">
+          {isDeployed ? (
+            <button className="btn-stop" onClick={handleStop}>Stop deploy</button>
+          ) : (
+            <button className="btn-deploy" onClick={handleDeploy} disabled={deploying}>
+              {deploying ? 'Deploying...' : 'Deploy changelog'}
+            </button>
+          )}
+        </div>
+      </div>
     </div>
-    
-    
-  
   )
 }
